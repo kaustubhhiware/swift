@@ -1,0 +1,41 @@
+*** Creating network
+*** Adding controller
+*** Adding hosts:
+h1 h2 h3 h4 hs 
+*** Adding switches:
+s1 
+*** Adding links:
+(h1, s1) (h2, s1) (h3, s1) (h4, s1) (hs, s1) 
+*** Configuring hosts
+h1 h2 h3 h4 hs 
+*** Starting controller
+c0 
+*** Starting 1 switches
+s1 ...
+*** Starting CLI:
+
+Interrupt
+
+Interrupt
+
+Interrupt
+
+Interrupt
+--------------------------------------------------------------------------------
+Caught exception. Cleaning up...
+
+IOError: [Errno 25] Inappropriate ioctl for device
+--------------------------------------------------------------------------------
+*** Removing excess controllers/ofprotocols/ofdatapaths/pings/noxes
+killall controller ofprotocol ofdatapath ping nox_core lt-nox_core ovs-openflowd ovs-controller udpbwtest mnexec ivs 2> /dev/null
+mininet> mininet> mininet> mininet> mininet> Traceback (most recent call last):
+  File "/usr/local/bin/mn", line 5, in <module>
+    pkg_resources.run_script('mininet==2.2.2', 'mn')
+  File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 528, in run_script
+    self.require(requires)[0].run_script(script_name, ns)
+  File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 1401, in run_script
+    exec(script_code, namespace, namespace)
+  File "/usr/local/lib/python2.7/dist-packages/mininet-2.2.2-py2.7.egg/EGG-INFO/scripts/mn", line 415, in <module>
+    
+  File "build/bdist.linux-x86_64/egg/mininet/clean.py", line 60, in cleanup
+KeyboardInterrupt
