@@ -3,11 +3,14 @@ Each node starts with broadcasting on a port.
 Every node responds back with the requesting IP whose download is going on, if any
 """
 import node
-import grpcio
 import argparse
 import logging
 import socket
+import threading
 from node import Node
+from message import Message
+import messageutils
+import sys
 
 NODE_SEND_PORT = 8192
 NODE_RECV_PORT = 8193
@@ -17,17 +20,31 @@ def broadcast_to_peers(ip, neighbors, msg):
 	'''
 
 	'''
-	s = socket.socket()
-	s.bind(('0.0.0.0', NODE_SEND_PORT))
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sock.bind(('', NODE_SEND_PORT))
 
-	for neighbor in neighbors:
-		s.listen(TIMEOUT)
-		while True:
-			c, addr = s.accept()
-			print 'Got connection from', addr
-			print c.recv(1024)
-			c.close()
+	sock.listen(5)
+	while True:
+		client, address = sock.accept()
+		client.settimeout(TIMEOUT)
+		threading.Thread(target = sendToPeer,args = (client, address)).start()
 
+
+def	sendToPeer(self, client, address):
+	size = 1024
+	while True:
+		try:
+			# messageutils.make_and_send_message()
+			client.send('hey')
+			# data = client.recv(size)
+			# if data:
+			# 	response = data
+			# 	client.send(response)
+			# else:
+			# 	raise error('Client disconnected')
+		except:
+			client.close()
+			return -1
 
 
 def get_id_from_neighbors(iplist):
@@ -43,9 +60,10 @@ def get_id_from_neighbors(iplist):
 	threads = []
 
 	while True: 
-		tcpServer.listen(4) 
-		print "Multithreaded Python server : Waiting for connections from TCP clients..." 
-		(conn, (ip,port)) = tcpServer.accept() 
+		sock.listen(5)
+		client, address = sock.accept()
+		client.settimeout(60)
+		threading.Thread(target = listenToClient,args = (client,address)).start()
 		
 		
 		newthread = ClientThread(ip,port) 
@@ -54,6 +72,21 @@ def get_id_from_neighbors(iplist):
  
 	for t in threads: 
 		t.join()
+
+def discovery_result(discovery_ip):
+	'''
+		connect to discoery_ip and populate iplists of neighbors
+	'''
+	vfile = io.StringIO()
+	s = socket.socket()
+	s.connect(discovery_ip, 4444)
+	d = s.recv(65565)
+	print(d)
+	while d:
+		vfile.write(d)
+		d = s.recv(65565)
+	s.close()
+	vfile.seek(0)
 
 
 if __name__ == '__main__':
@@ -68,9 +101,41 @@ if __name__ == '__main__':
 		exit(0)
 
 	# First contact discovery server tro obtain list of neighbours connected
-	iplist = discovery_result(args.discovery_ip)
+	iplist = discovery_result(discovery_ip)
 
+	print(iplist)
+	exit(0)
 	# get an id assigned
 	# send all neighbors in iplist a message enquiring their ip and id (if assigned)
-	idlists, iplist = get_id_from_neighbors(iplist)
+	idlist, ip = get_id_from_neighbors(iplist)
 
+	hostname = socket.gethostname()
+	IPAddr = socket.gethostbyname(hostname)
+	n = Node(IPAddr, ip, [], None, None, idlist)
+	
+	msg_socket = socket.socket()
+	msg_socket.bind(('', NODE_RECV_PORT))
+	msg_socket.listen(5)
+
+	while True:
+		connection, client_address = msg_socket.accept()
+		
+		data_list = []
+		data = connection.recv(network_params.BUFFER_SIZE)
+		while data:
+			data_list.append(data)
+			data = connection.recv(network_params.BUFFER_SIZE)
+		data = b''.join(data_list)
+
+		msg = pickle.loads(data)
+		assert isinstance(msg, message.Message), "Received object on socket not of type Message.")
+
+		if msg.msg_type == 'HEARTBEAT':
+			# do something
+		
+		elif msg.msg_type == 'DOWNLOAD_REQUEST':
+			# do something
+		
+		elif msg.msg_type == 'ID_REQUEST':
+
+		
