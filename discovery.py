@@ -1,44 +1,66 @@
+import os
+import pathlib
+import pickle
+import signal
 import socket
 import sys
+import constants
+import utils
 
+
+self_ip = utils.getNetworkIp()
 s = socket.socket()
-s.bind(('10.145.88.91', 4444))
-s.listen(20)
-f = open('discovered.txt','w+')
-while True:
-	sc, address = s.accept()
-	print(address)
-	data = f.readlines()
-	for line in data:
-		if line == address:
-			data.remove(line)
-	b = bytes('\n'.join(data), 'utf-8')
-	print(b)
-	f.seek(0)
-	x  =f.read()
-	while f:
-		s.send(bytes(x, 'utf-8'))
-		x = f.read()
+s.bind((self_ip, constants.DISCOVERY_PORT))
 
-	data.append(address[0])
-	f.writelines('\n'.join(data))
-	sc.close()
-s.close()
-f.close()
+def signal_handler(signal, frame):
+	'''
+		Close socket before exitting
+	'''
+	s.close()
+	utils.print_log('Stopping discovery server')
+	sys.exit(0)
 
-# import socket
-# import io
-#
-# vfile = io.StringIO()
-# s = socket.socket()
-# s.connect('discoveryip', 4444)
-# d = s.recv(65565)
-# print(d)
-# while d:
-# 	vfile.write(d)
-# 	d = s.recv(65565)
-# s.close()
-# vfile.seek(0)
-#
-# # data = vfile.read
-# #data should be a list of strings of addresses
+
+def discovery_server():
+	'''
+		Run discovery server, and send a list of all IP's previously connected
+	'''	
+	utils.print_log('Starting discovery server at IP ' + self_ip + ' with pid ' + str(os.getpid()))
+
+	# try:
+	# 	s.bind((self_ip, constants.DISCOVERY_PORT))
+	# except OSError o:
+	# 	print('OSError', o)
+	# 	exit(1)
+	signal.signal(signal.SIGINT, signal_handler)
+
+	s.listen(20)
+
+	while True:
+		sc, address = s.accept()
+		utils.print_log('Receieved connection from ' + str(address))
+
+		iplist = []
+		if os.path.exists(constants.LOG_FILE):
+			with open(constants.LOG_FILE, 'rb') as f:
+				iplist = pickle.load(f)
+
+		# remove address if already added in list
+		if address in iplist:
+			 iplist.remove(address)
+
+		sc.send(pickle.dumps(iplist))
+
+		# save ip in list, and update file
+		iplist.append(address[0])
+		with open(constants.LOG_FILE, 'wb') as f:
+			pickle.dump(iplist, f)
+
+		sc.close()
+
+	s.close()
+
+
+if __name__ == '__main__':
+	utils.print_prompt(discovery=True)
+	discovery_server()
