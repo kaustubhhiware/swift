@@ -6,16 +6,19 @@ class Node(object):
 		- requested_file - file to be downloaded
 		- file_start, file_end - fragments assigned to download
 		- a download queue list : Empty at init
+		- neighbors: a list of nodes in the network
 		- For now, we assume the directory made available for sharing is the current directory
 	'''
 
-	def __init__(self, id=1, requesting_id=0, requesting_file=None, dl_queue=None):
+	def __init__(self, ip, id=-1, requesting_id=[], requesting_file=None, dl_queue=None, neighbors = []):
+		self.ip = ip
 		self.id = id
-		self.requesting_id = requesting_id
+		self.requesting_id = []
 		self.requesting_file = requesting_file
 		self.dl_queue = dl_queue
 		self.file_start, self.file_end = None, None
 		self.sharing = '.'
+		self.neighbors = []
 
 	def set_id(id_list):
 		'''
