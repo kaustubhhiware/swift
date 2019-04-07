@@ -10,9 +10,9 @@ class Node(object):
 		- For now, we assume the directory made available for sharing is the current directory
 	'''
 
-	def __init__(self, ip, id=-1, requesting_id=[], requesting_file=None, dl_queue=None, neighbors = []):
+	def __init__(self, ip, id_=-1, requesting_id=[], requesting_file=None, dl_queue=None, neighbors = []):
 		self.ip = ip
-		self.id = id
+		self.id = id_
 		self.requesting_id = []
 		self.requesting_file = requesting_file
 		self.dl_queue = dl_queue
@@ -20,16 +20,8 @@ class Node(object):
 		self.sharing = '.'
 		self.neighbors = []
 
-	def set_id(id_list):
-		'''
-			Given a list of ids, assign its own id as max id in list + 1
-		'''
-		if id_list is None:
-			id_list = [0]
-		self.id = max(id_list) + 1
-
-	def set_requesting(idx, file):
-		self.requesting_id = idx
+	def set_requesting(idx_list, file):
+		self.requesting_id = idx_list
 		self.requesting_file = file
 
 	def set_request_file_bounds(start, end):
