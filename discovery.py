@@ -2,7 +2,7 @@ import socket
 import sys
 
 s = socket.socket()
-s.bind(("localhost", 4444))
+s.bind(('10.145.88.91', 4444))
 s.listen(20)
 f = open('discovered.txt','w+')
 while True:
@@ -12,10 +12,16 @@ while True:
 	for line in data:
 		if line == address:
 			data.remove(line)
-	data.append(address)
+	b = bytes('\n'.join(data), 'utf-8')
+	print(b)
 	f.seek(0)
-	f.writelines(data)
-	s.sendall(f)
+	x  =f.read()
+	while f:
+		s.send(bytes(x, 'utf-8'))
+		x = f.read()
+
+	data.append(address[0])
+	f.writelines('\n'.join(data))
 	sc.close()
 s.close()
 f.close()

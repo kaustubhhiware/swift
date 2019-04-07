@@ -11,10 +11,13 @@ from node import Node
 from message import Message
 import messageutils
 import sys
+import io
 
 NODE_SEND_PORT = 8192
 NODE_RECV_PORT = 8193
 TIMEOUT = 5
+BUFFER_SIZE = 1048576
+DISCOVERY_PORT = 4444
 
 def broadcast_to_peers(ip, neighbors, msg):
 	'''
@@ -79,12 +82,12 @@ def discovery_result(discovery_ip):
 	'''
 	vfile = io.StringIO()
 	s = socket.socket()
-	s.connect(discovery_ip, 4444)
-	d = s.recv(65565)
+	s.connect((discovery_ip, DISCOVERY_PORT))
+	d = s.recv(65565).decode('utf-8')
 	print(d)
 	while d:
 		vfile.write(d)
-		d = s.recv(65565)
+		d = s.recv(65565).decode('utf-8')
 	s.close()
 	vfile.seek(0)
 
@@ -100,6 +103,9 @@ if __name__ == '__main__':
 		print('Need to provide discovery IP !')
 		exit(0)
 
+	hostname = socket.gethostname()
+	IPAddr = socket.gethostbyname(hostname)
+	print(IPAddr)
 	# First contact discovery server tro obtain list of neighbours connected
 	iplist = discovery_result(discovery_ip)
 
@@ -121,10 +127,10 @@ if __name__ == '__main__':
 		connection, client_address = msg_socket.accept()
 		
 		data_list = []
-		data = connection.recv(network_params.BUFFER_SIZE)
+		data = connection.recv(BUFFER_SIZE)
 		while data:
 			data_list.append(data)
-			data = connection.recv(network_params.BUFFER_SIZE)
+			data = connection.recv(BUFFER_SIZE)
 		data = b''.join(data_list)
 
 		msg = pickle.loads(data)
