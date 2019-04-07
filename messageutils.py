@@ -4,6 +4,8 @@ import psutil
 import socket
 import time
 
+PORT = 8192
+
 def make_and_send_message(msg_type, content, file_path, to, msg_socket, port):
     """
     """
@@ -11,7 +13,7 @@ def make_and_send_message(msg_type, content, file_path, to, msg_socket, port):
     send_message(msg=msg, to=to, msg_socket=msg_socket, port=port)
 
 
-def send_message(msg, to, msg_socket=None, port):
+def send_message(msg, to, msg_socket=None, port=PORT):
     """
     """
     if msg_socket is None:

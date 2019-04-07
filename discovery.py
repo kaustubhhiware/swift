@@ -4,7 +4,7 @@ import sys
 s = socket.socket()
 s.bind(("localhost", 4444))
 s.listen(20)
-f = open('discovered.txt','+')
+f = open('discovered.txt','w+')
 while True:
 	sc, address = s.accept()
 	print(address)

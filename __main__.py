@@ -128,14 +128,15 @@ if __name__ == '__main__':
 		data = b''.join(data_list)
 
 		msg = pickle.loads(data)
-		assert isinstance(msg, message.Message), "Received object on socket not of type Message.")
+		assert isinstance(msg, message.Message), "Received object on socket not of type Message."
 
 		if msg.msg_type == 'HEARTBEAT':
 			# do something
+			pass
 		
 		elif msg.msg_type == 'DOWNLOAD_REQUEST':
 			# do something
-		
+			pass
 		elif msg.msg_type == 'ID_REQUEST':
-
+			pass
 		
