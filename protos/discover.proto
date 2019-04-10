@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.discover";
+option java_outer_classname = "discoverProto";
+option objc_class_prefix = "HLW";
+
+package discover;
+
+// The greeting service definition.
+service Greeter {
+  rpc AssignId (IdRequest) returns (IdReply) {}
+}
+
+message IdRequest {
+  string ip = 1;
+}
+
+message IdReply {
+  int64 id = 1;
+  // TODO: add list of nodes in server
+}
