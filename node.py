@@ -15,8 +15,8 @@ class Node(object):
 		self.id = id_
 		self.requesting_id = []
 		self.requesting_file = requesting_file
-		self.dl_queue = dl_queue
-		self.file_start, self.file_end = None, None
+		self.dl_queue = dl_queue # redundant
+		self.file_start, self.file_end = None, None 
 		self.sharing = '.'
 		self.neighbors = []
 

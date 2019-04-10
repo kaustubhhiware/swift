@@ -92,22 +92,24 @@ if __name__ == '__main__':
 
 	# First contact discovery server tro obtain list of neighbours connected
 	iplist = discover_nodes(discovery_ip)
+	id_ = len(iplist) + 1
 
+	iplist = list(set(iplist))
 	utils.print_log('Received neighbors ' +str(iplist))
 	exit(0)
 
 	# get an id assigned
 	# send all neighbors in iplist a message enquiring their id
-	active_neighbors = get_id_from_neighbors(self_ip=self_ip, neighbors=iplist)
+	# active_neighbors = get_id_from_neighbors(self_ip=self_ip, neighbors=iplist)
 
-	idlist = active_neighbors.keys()
+	# idlist = active_neighbors.keys()
 	# assign id
-	id_ = 1
-	if idlist is not None:
-		id_ = max(active_neighbors.values()) + 1
+	# id_ = 1
+	# if idlist is not None:
+	# 	id_ = max(active_neighbors.values()) + 1
 
 	node = Node(ip=self_ip, id=id_, requesting_id=[],
-			requesting_file=None, dl_queue=None, neighbors=idlist)
+			requesting_file=None, dl_queue=None, neighbors=iplist)
 	
 
 	msg_socket = socket.socket()
@@ -148,7 +150,7 @@ if __name__ == '__main__':
 		elif msg.msg_type == 'PAUSE_NEW':
 			# new node joined, pause all downloads
 			# this can be sent only by the temp server
-
+			pass
 		# when this node is temporary server
 		# send back HEARTBEAT
 

@@ -46,8 +46,8 @@ def discovery_server():
 				iplist = pickle.load(f)
 
 		# remove address if already added in list
-		if address in iplist:
-			 iplist.remove(address)
+		# if address in iplist:
+		# 	 iplist.remove(address)
 
 		sc.send(pickle.dumps(iplist))
 
