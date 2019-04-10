@@ -1,2 +1,4 @@
 BFL
 __pycache__/
+.vscode/
+discovered.pkl
