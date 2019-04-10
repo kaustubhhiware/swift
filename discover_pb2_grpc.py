@@ -14,8 +14,8 @@ class GreeterStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.AssignId = channel.unary_unary(
-        '/discover.Greeter/AssignId',
+    self.GetNodes = channel.unary_unary(
+        '/discover.Greeter/GetNodes',
         request_serializer=discover__pb2.IdRequest.SerializeToString,
         response_deserializer=discover__pb2.IdReply.FromString,
         )
@@ -25,7 +25,7 @@ class GreeterServicer(object):
   """The greeting service definition.
   """
 
-  def AssignId(self, request, context):
+  def GetNodes(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -35,8 +35,8 @@ class GreeterServicer(object):
 
 def add_GreeterServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'AssignId': grpc.unary_unary_rpc_method_handler(
-          servicer.AssignId,
+      'GetNodes': grpc.unary_unary_rpc_method_handler(
+          servicer.GetNodes,
           request_deserializer=discover__pb2.IdRequest.FromString,
           response_serializer=discover__pb2.IdReply.SerializeToString,
       ),
