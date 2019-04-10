@@ -15,27 +15,25 @@ _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 SELF_IP = utils.getNetworkIp()
 
 
-ip_list = []
-
 class Greeter(discover_pb2_grpc.GreeterServicer):
 
     def AssignId(self, request, context):
         address = request.ip
         utils.print_log('Receieved connection from ' + address)
-        iplist = []
+        ip_list = []
         if os.path.exists(constants.LOG_FILE):
             with open(constants.LOG_FILE, 'rb') as f:
-                iplist = pickle.load(f)
+                ip_list = pickle.load(f)
 
-        assign_id = len(iplist) + 1
+        assign_id = len(ip_list) + 1
 
         # save ip in list, and update file
-        iplist.append(address)
+        ip_list.append(address)
         with open(constants.LOG_FILE, 'wb') as f:
-            pickle.dump(iplist, f)
+            pickle.dump(ip_list, f)
 
         utils.print_log('Assigning id# ' + str(assign_id) + ' to ' + request.ip)
-        return discover_pb2.IdReply(id=assign_id, ip_list=pickle.dumps(iplist))
+        return discover_pb2.IdReply(id=assign_id, ip_list=pickle.dumps(ip_list))
 
 
 def serve():
