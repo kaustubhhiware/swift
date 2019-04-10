@@ -9,7 +9,7 @@ package discover;
 
 // The greeting service definition.
 service Greeter {
-  rpc AssignId (IdRequest) returns (IdReply) {}
+  rpc GetNodes (IdRequest) returns (IdReply) {}
 }
 
 message IdRequest {
@@ -17,8 +17,7 @@ message IdRequest {
 }
 
 message IdReply {
-  int64 id = 1;
-  bytes ip_list = 2;
+  bytes ip_list = 1;
 }
 
 service Collaborator {

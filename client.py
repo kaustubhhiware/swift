@@ -15,7 +15,6 @@ import discover_pb2_grpc
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 SELF_IP = utils.getNetworkIp()
-ip_list = []
 
 class Collaborator(discover_pb2_grpc.CollaboratorServicer):
 
@@ -35,19 +34,23 @@ def send(node, message):
         response = stub.SendMessage(discover_pb2.MessageRequest(message_type=1, message=message))
         utils.print_log("Sent message '%s' to node '%s'" % (message, node))
         utils.print_log("Received response '%s'" % (response.message))
+        return True
     except Exception:
         utils.print_log("Could not send message to '%s'" % (node))
+        return False
 
 
-def broadcast(message):
+def broadcast(message, ip_list):
     utils.print_log("Broadcasting message '%s'..." % (message))
     for node in ip_list:
         if node != SELF_IP:
-            send(node, message)
+            is_active = send(node, message)
+            if not is_active:
+                ip_list.remove(node)
     utils.print_log("Broadcast message complete.")
 
 
-def serve():
+def serve(ip_list):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     discover_pb2_grpc.add_CollaboratorServicer_to_server(Collaborator(), server)
     server.add_insecure_port('[::]:' + str(constants.MESSAGING_PORT))
@@ -62,7 +65,7 @@ def serve():
             elif raw_input[0] == "send":
                 send(raw_input[1], raw_input[2])
             elif raw_input[0] == "bcast":
-                broadcast(raw_input[1])
+                broadcast(raw_input[1], ip_list)
 
     except KeyboardInterrupt:
         print("Stopping collaborator. Goodbye!")
@@ -72,14 +75,13 @@ def serve():
 def run(discovery_ip):
     channel = grpc.insecure_channel(discovery_ip + ':' + str(constants.DISCOVERY_PORT))
     stub = discover_pb2_grpc.GreeterStub(channel)
-    response = stub.AssignId(discover_pb2.IdRequest(ip=SELF_IP))
+    response = stub.GetNodes(discover_pb2.IdRequest(ip=SELF_IP))
     utils.print_log('Connected to server')
-    utils.print_log('Id assigned by server is: ' + str(response.id))
     ip_list = pickle.loads(response.ip_list)
     utils.print_log('All discovered clients are:')
     for id, ip in enumerate(ip_list):
-        utils.print_log("\tid# %3d ip: %s" % (id+1, ip))
-    serve()
+        utils.print_log("\tnode # %3d ip: %s" % (id+1, ip))
+    serve(ip_list)
 
 
 if __name__ == '__main__':

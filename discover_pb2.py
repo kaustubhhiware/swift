@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='discover',
   syntax='proto3',
   serialized_options=_b('\n\031io.grpc.examples.discoverB\rdiscoverProtoP\001\242\002\003HLW'),
-  serialized_pb=_b('\n\x0e\x64iscover.proto\x12\x08\x64iscover\"\x17\n\tIdRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"&\n\x07IdReply\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0f\n\x07ip_list\x18\x02 \x01(\x0c\"7\n\x0eMessageRequest\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\"5\n\x0cMessageReply\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t2?\n\x07Greeter\x12\x34\n\x08\x41ssignId\x12\x13.discover.IdRequest\x1a\x11.discover.IdReply\"\x00\x32Q\n\x0c\x43ollaborator\x12\x41\n\x0bSendMessage\x12\x18.discover.MessageRequest\x1a\x16.discover.MessageReply\"\x00\x42\x32\n\x19io.grpc.examples.discoverB\rdiscoverProtoP\x01\xa2\x02\x03HLWb\x06proto3')
+  serialized_pb=_b('\n\x0e\x64iscover.proto\x12\x08\x64iscover\"\x17\n\tIdRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"\x1a\n\x07IdReply\x12\x0f\n\x07ip_list\x18\x01 \x01(\x0c\"7\n\x0eMessageRequest\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\"5\n\x0cMessageReply\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t2?\n\x07Greeter\x12\x34\n\x08GetNodes\x12\x13.discover.IdRequest\x1a\x11.discover.IdReply\"\x00\x32Q\n\x0c\x43ollaborator\x12\x41\n\x0bSendMessage\x12\x18.discover.MessageRequest\x1a\x16.discover.MessageReply\"\x00\x42\x32\n\x19io.grpc.examples.discoverB\rdiscoverProtoP\x01\xa2\x02\x03HLWb\x06proto3')
 )
 
 
@@ -64,15 +64,8 @@ _IDREPLY = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='id', full_name='discover.IdReply.id', index=0,
-      number=1, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='ip_list', full_name='discover.IdReply.ip_list', index=1,
-      number=2, type=12, cpp_type=9, label=1,
+      name='ip_list', full_name='discover.IdReply.ip_list', index=0,
+      number=1, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -90,7 +83,7 @@ _IDREPLY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=53,
-  serialized_end=91,
+  serialized_end=79,
 )
 
 
@@ -127,8 +120,8 @@ _MESSAGEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=93,
-  serialized_end=148,
+  serialized_start=81,
+  serialized_end=136,
 )
 
 
@@ -165,8 +158,8 @@ _MESSAGEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=150,
-  serialized_end=203,
+  serialized_start=138,
+  serialized_end=191,
 )
 
 DESCRIPTOR.message_types_by_name['IdRequest'] = _IDREQUEST
@@ -212,12 +205,12 @@ _GREETER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=205,
-  serialized_end=268,
+  serialized_start=193,
+  serialized_end=256,
   methods=[
   _descriptor.MethodDescriptor(
-    name='AssignId',
-    full_name='discover.Greeter.AssignId',
+    name='GetNodes',
+    full_name='discover.Greeter.GetNodes',
     index=0,
     containing_service=None,
     input_type=_IDREQUEST,
@@ -236,8 +229,8 @@ _COLLABORATOR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   serialized_options=None,
-  serialized_start=270,
-  serialized_end=351,
+  serialized_start=258,
+  serialized_end=339,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendMessage',

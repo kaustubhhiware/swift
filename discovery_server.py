@@ -17,7 +17,7 @@ SELF_IP = utils.getNetworkIp()
 
 class Greeter(discover_pb2_grpc.GreeterServicer):
 
-    def AssignId(self, request, context):
+    def GetNodes(self, request, context):
         address = request.ip
         utils.print_log('Receieved connection from ' + address)
         ip_list = []
@@ -25,15 +25,14 @@ class Greeter(discover_pb2_grpc.GreeterServicer):
             with open(constants.LOG_FILE, 'rb') as f:
                 ip_list = pickle.load(f)
 
-        assign_id = len(ip_list) + 1
-
         # save ip in list, and update file
         ip_list.append(address)
+        ip_list = list(set(ip_list))
         with open(constants.LOG_FILE, 'wb') as f:
             pickle.dump(ip_list, f)
 
-        utils.print_log('Assigning id# ' + str(assign_id) + ' to ' + request.ip)
-        return discover_pb2.IdReply(id=assign_id, ip_list=pickle.dumps(ip_list))
+        utils.print_log('Sending nodes IP address list to ' + request.ip)
+        return discover_pb2.IdReply(ip_list=pickle.dumps(ip_list))
 
 
 def serve():
