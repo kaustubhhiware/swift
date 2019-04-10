@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='discover',
   syntax='proto3',
   serialized_options=_b('\n\031io.grpc.examples.discoverB\rdiscoverProtoP\001\242\002\003HLW'),
-  serialized_pb=_b('\n\x0e\x64iscover.proto\x12\x08\x64iscover\"\x17\n\tIdRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"&\n\x07IdReply\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0f\n\x07ip_list\x18\x02 \x01(\x0c\x32?\n\x07Greeter\x12\x34\n\x08\x41ssignId\x12\x13.discover.IdRequest\x1a\x11.discover.IdReply\"\x00\x42\x32\n\x19io.grpc.examples.discoverB\rdiscoverProtoP\x01\xa2\x02\x03HLWb\x06proto3')
+  serialized_pb=_b('\n\x0e\x64iscover.proto\x12\x08\x64iscover\"\x17\n\tIdRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"&\n\x07IdReply\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0f\n\x07ip_list\x18\x02 \x01(\x0c\"7\n\x0eMessageRequest\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\"5\n\x0cMessageReply\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t2?\n\x07Greeter\x12\x34\n\x08\x41ssignId\x12\x13.discover.IdRequest\x1a\x11.discover.IdReply\"\x00\x32Q\n\x0c\x43ollaborator\x12\x41\n\x0bSendMessage\x12\x18.discover.MessageRequest\x1a\x16.discover.MessageReply\"\x00\x42\x32\n\x19io.grpc.examples.discoverB\rdiscoverProtoP\x01\xa2\x02\x03HLWb\x06proto3')
 )
 
 
@@ -93,8 +93,86 @@ _IDREPLY = _descriptor.Descriptor(
   serialized_end=91,
 )
 
+
+_MESSAGEREQUEST = _descriptor.Descriptor(
+  name='MessageRequest',
+  full_name='discover.MessageRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='message_type', full_name='discover.MessageRequest.message_type', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='message', full_name='discover.MessageRequest.message', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=93,
+  serialized_end=148,
+)
+
+
+_MESSAGEREPLY = _descriptor.Descriptor(
+  name='MessageReply',
+  full_name='discover.MessageReply',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='message_type', full_name='discover.MessageReply.message_type', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='message', full_name='discover.MessageReply.message', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=150,
+  serialized_end=203,
+)
+
 DESCRIPTOR.message_types_by_name['IdRequest'] = _IDREQUEST
 DESCRIPTOR.message_types_by_name['IdReply'] = _IDREPLY
+DESCRIPTOR.message_types_by_name['MessageRequest'] = _MESSAGEREQUEST
+DESCRIPTOR.message_types_by_name['MessageReply'] = _MESSAGEREPLY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 IdRequest = _reflection.GeneratedProtocolMessageType('IdRequest', (_message.Message,), dict(
@@ -111,6 +189,20 @@ IdReply = _reflection.GeneratedProtocolMessageType('IdReply', (_message.Message,
   ))
 _sym_db.RegisterMessage(IdReply)
 
+MessageRequest = _reflection.GeneratedProtocolMessageType('MessageRequest', (_message.Message,), dict(
+  DESCRIPTOR = _MESSAGEREQUEST,
+  __module__ = 'discover_pb2'
+  # @@protoc_insertion_point(class_scope:discover.MessageRequest)
+  ))
+_sym_db.RegisterMessage(MessageRequest)
+
+MessageReply = _reflection.GeneratedProtocolMessageType('MessageReply', (_message.Message,), dict(
+  DESCRIPTOR = _MESSAGEREPLY,
+  __module__ = 'discover_pb2'
+  # @@protoc_insertion_point(class_scope:discover.MessageReply)
+  ))
+_sym_db.RegisterMessage(MessageReply)
+
 
 DESCRIPTOR._options = None
 
@@ -120,8 +212,8 @@ _GREETER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=93,
-  serialized_end=156,
+  serialized_start=205,
+  serialized_end=268,
   methods=[
   _descriptor.MethodDescriptor(
     name='AssignId',
@@ -136,5 +228,29 @@ _GREETER = _descriptor.ServiceDescriptor(
 _sym_db.RegisterServiceDescriptor(_GREETER)
 
 DESCRIPTOR.services_by_name['Greeter'] = _GREETER
+
+
+_COLLABORATOR = _descriptor.ServiceDescriptor(
+  name='Collaborator',
+  full_name='discover.Collaborator',
+  file=DESCRIPTOR,
+  index=1,
+  serialized_options=None,
+  serialized_start=270,
+  serialized_end=351,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='SendMessage',
+    full_name='discover.Collaborator.SendMessage',
+    index=0,
+    containing_service=None,
+    input_type=_MESSAGEREQUEST,
+    output_type=_MESSAGEREPLY,
+    serialized_options=None,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_COLLABORATOR)
+
+DESCRIPTOR.services_by_name['Collaborator'] = _COLLABORATOR
 
 # @@protoc_insertion_point(module_scope)

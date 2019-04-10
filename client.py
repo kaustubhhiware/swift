@@ -1,16 +1,55 @@
 from __future__ import print_function
+from concurrent import futures
 import logging
 import constants
 import utils
 import argparse
 import pickle
+import os
+import time
 
 import grpc
 
 import discover_pb2
 import discover_pb2_grpc
 
+_ONE_DAY_IN_SECONDS = 60 * 60 * 24
 SELF_IP = utils.getNetworkIp()
+
+class Collaborator(discover_pb2_grpc.CollaboratorServicer):
+
+    def SendMessage(self, request, context):
+        message_type = request.message_type
+        message = request.message
+        utils.print_log('Received message of type: %d' % (message_type))
+        utils.print_log('message: %s' % (message))
+        return discover_pb2.MessageReply(message_type=0, message="ack")
+
+
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    discover_pb2_grpc.add_CollaboratorServicer_to_server(Collaborator(), server)
+    server.add_insecure_port('[::]:' + str(constants.MESSAGE_RECV_PORT))
+    server.start()
+    utils.print_log('Starting collaborator node at IP ' + SELF_IP + ' with pid ' + str(os.getpid()))
+    try:
+        in_command_loop = True
+        while in_command_loop:
+            raw_input = input(">").strip().split()
+            if raw_input[0] == "help":
+                print("Available commands are: \n help, send <IP> <Message>")
+            elif raw_input[0] == "send":
+                print("Sending message to %s" % (raw_input[1]))
+                channel = grpc.insecure_channel(raw_input[1] + ':' + str(constants.MESSAGE_SEND_PORT))
+                stub = discover_pb2_grpc.CollaboratorStub(channel)
+                response = stub.SendMessage(discover_pb2.MessageRequest(message_type=1, message=raw_input[2]))
+                utils.print_log("Sent message '%s' to node '%d'" % (raw_input[1], raw_input[2]))
+        # while True:
+        #     time.sleep(_ONE_DAY_IN_SECONDS)
+    except KeyboardInterrupt:
+        print("Stopping collaborator. Goodbye!")
+        server.stop(0)
+
 
 def run(discovery_ip):
     channel = grpc.insecure_channel(discovery_ip + ':' + str(constants.DISCOVERY_PORT))
@@ -22,7 +61,7 @@ def run(discovery_ip):
     utils.print_log('All discovered clients are:')
     for id, ip in enumerate(ip_list):
         utils.print_log("\tid# %3d ip: %s" % (id+1, ip))
-    exit(0)
+    serve()
 
 
 if __name__ == '__main__':
@@ -38,5 +77,5 @@ if __name__ == '__main__':
         print('Need to provide discovery server IP !')
         exit(0)
 
-    utils.print_log('Starting connection to ' + SELF_IP)
+    utils.print_log('Starting connection to ' + discovery_ip)
     run(discovery_ip)

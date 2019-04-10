@@ -20,3 +20,17 @@ message IdReply {
   int64 id = 1;
   bytes ip_list = 2;
 }
+
+service Collaborator {
+  rpc SendMessage (MessageRequest) returns (MessageReply) {}
+}
+
+message MessageRequest {
+  int32 message_type = 1;
+  string message = 2;
+}
+
+message MessageReply {
+  int32 message_type = 1;
+  string message = 2;
+}
