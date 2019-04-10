@@ -15,6 +15,7 @@ import discover_pb2_grpc
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 SELF_IP = utils.getNetworkIp()
+ip_list = []
 
 class Collaborator(discover_pb2_grpc.CollaboratorServicer):
 
@@ -24,6 +25,26 @@ class Collaborator(discover_pb2_grpc.CollaboratorServicer):
         utils.print_log('Received message of type: %d' % (message_type))
         utils.print_log('message: %s' % (message))
         return discover_pb2.MessageReply(message_type=0, message="ack")
+
+
+def send(node, message):
+    try:
+        utils.print_log("Sending message to %s..." % (node))
+        channel = grpc.insecure_channel(node + ':' + str(constants.MESSAGING_PORT))
+        stub = discover_pb2_grpc.CollaboratorStub(channel)
+        response = stub.SendMessage(discover_pb2.MessageRequest(message_type=1, message=message))
+        utils.print_log("Sent message '%s' to node '%s'" % (message, node))
+        utils.print_log("Received response '%s'" % (response.message))
+    except Exception:
+        utils.print_log("Could not send message to '%s'" % (node))
+
+
+def broadcast(message):
+    utils.print_log("Broadcasting message '%s'..." % (message))
+    for node in ip_list:
+        if node != SELF_IP:
+            send(node, message)
+    utils.print_log("Broadcast message complete.")
 
 
 def serve():
@@ -37,15 +58,12 @@ def serve():
         while in_command_loop:
             raw_input = input(">").strip().split()
             if raw_input[0] == "help":
-                print("Available commands are: \n help, send <IP> <Message>")
+                print("Available commands are: \n help, send <IP> <Message>, bcast <Message>")
             elif raw_input[0] == "send":
-                utils.print_log("Sending message to %s" % (raw_input[1]))
-                channel = grpc.insecure_channel(raw_input[1] + ':' + str(constants.MESSAGING_PORT))
-                stub = discover_pb2_grpc.CollaboratorStub(channel)
-                response = stub.SendMessage(discover_pb2.MessageRequest(message_type=1, message=raw_input[2]))
-                utils.print_log("Sent message '%s' to node '%s'" % (raw_input[2], raw_input[1]))
-        # while True:
-        #     time.sleep(_ONE_DAY_IN_SECONDS)
+                send(raw_input[1], raw_input[2])
+            elif raw_input[0] == "bcast":
+                broadcast(raw_input[1])
+
     except KeyboardInterrupt:
         print("Stopping collaborator. Goodbye!")
         server.stop(0)
