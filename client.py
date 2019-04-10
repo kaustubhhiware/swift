@@ -29,7 +29,7 @@ class Collaborator(discover_pb2_grpc.CollaboratorServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     discover_pb2_grpc.add_CollaboratorServicer_to_server(Collaborator(), server)
-    server.add_insecure_port('[::]:' + str(constants.MESSAGE_RECV_PORT))
+    server.add_insecure_port('[::]:' + str(constants.MESSAGING_PORT))
     server.start()
     utils.print_log('Starting collaborator node at IP ' + SELF_IP + ' with pid ' + str(os.getpid()))
     try:
@@ -39,11 +39,11 @@ def serve():
             if raw_input[0] == "help":
                 print("Available commands are: \n help, send <IP> <Message>")
             elif raw_input[0] == "send":
-                print("Sending message to %s" % (raw_input[1]))
-                channel = grpc.insecure_channel(raw_input[1] + ':' + str(constants.MESSAGE_SEND_PORT))
+                utils.print_log("Sending message to %s" % (raw_input[1]))
+                channel = grpc.insecure_channel(raw_input[1] + ':' + str(constants.MESSAGING_PORT))
                 stub = discover_pb2_grpc.CollaboratorStub(channel)
                 response = stub.SendMessage(discover_pb2.MessageRequest(message_type=1, message=raw_input[2]))
-                utils.print_log("Sent message '%s' to node '%d'" % (raw_input[1], raw_input[2]))
+                utils.print_log("Sent message '%s' to node '%s'" % (raw_input[2], raw_input[1]))
         # while True:
         #     time.sleep(_ONE_DAY_IN_SECONDS)
     except KeyboardInterrupt:
