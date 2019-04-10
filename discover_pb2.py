@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='discover',
   syntax='proto3',
   serialized_options=_b('\n\031io.grpc.examples.discoverB\rdiscoverProtoP\001\242\002\003HLW'),
-  serialized_pb=_b('\n\x0e\x64iscover.proto\x12\x08\x64iscover\"\x17\n\tIdRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"\x15\n\x07IdReply\x12\n\n\x02id\x18\x01 \x01(\x03\x32?\n\x07Greeter\x12\x34\n\x08\x41ssignId\x12\x13.discover.IdRequest\x1a\x11.discover.IdReply\"\x00\x42\x32\n\x19io.grpc.examples.discoverB\rdiscoverProtoP\x01\xa2\x02\x03HLWb\x06proto3')
+  serialized_pb=_b('\n\x0e\x64iscover.proto\x12\x08\x64iscover\"\x17\n\tIdRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"&\n\x07IdReply\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0f\n\x07ip_list\x18\x02 \x01(\x0c\x32?\n\x07Greeter\x12\x34\n\x08\x41ssignId\x12\x13.discover.IdRequest\x1a\x11.discover.IdReply\"\x00\x42\x32\n\x19io.grpc.examples.discoverB\rdiscoverProtoP\x01\xa2\x02\x03HLWb\x06proto3')
 )
 
 
@@ -70,6 +70,13 @@ _IDREPLY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ip_list', full_name='discover.IdReply.ip_list', index=1,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -83,7 +90,7 @@ _IDREPLY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=53,
-  serialized_end=74,
+  serialized_end=91,
 )
 
 DESCRIPTOR.message_types_by_name['IdRequest'] = _IDREQUEST
@@ -113,8 +120,8 @@ _GREETER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=76,
-  serialized_end=139,
+  serialized_start=93,
+  serialized_end=156,
   methods=[
   _descriptor.MethodDescriptor(
     name='AssignId',

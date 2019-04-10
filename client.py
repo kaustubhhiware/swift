@@ -3,6 +3,7 @@ import logging
 import constants
 import utils
 import argparse
+import pickle
 
 import grpc
 
@@ -17,6 +18,10 @@ def run(discovery_ip):
     response = stub.AssignId(discover_pb2.IdRequest(ip=SELF_IP))
     utils.print_log('Connected to server')
     utils.print_log('Id assigned by server is: ' + str(response.id))
+    ip_list = pickle.loads(response.ip_list)
+    utils.print_log('All discovered clients are:')
+    for id, ip in enumerate(ip_list):
+        utils.print_log("\tid# %3d ip: %s" % (id+1, ip))
     exit(0)
 
 

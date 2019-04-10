@@ -18,5 +18,5 @@ message IdRequest {
 
 message IdReply {
   int64 id = 1;
-  // TODO: add list of nodes in server
+  bytes ip_list = 2;
 }

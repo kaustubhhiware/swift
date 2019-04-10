@@ -5,6 +5,7 @@ import constants
 import utils
 import os
 import pickle
+
 import grpc
 
 import discover_pb2
@@ -19,10 +20,22 @@ ip_list = []
 class Greeter(discover_pb2_grpc.GreeterServicer):
 
     def AssignId(self, request, context):
-        utils.print_log('Receieved connection from ' + request.ip)
-        assign_id = 1
+        address = request.ip
+        utils.print_log('Receieved connection from ' + address)
+        iplist = []
+        if os.path.exists(constants.LOG_FILE):
+            with open(constants.LOG_FILE, 'rb') as f:
+                iplist = pickle.load(f)
+
+        assign_id = len(iplist) + 1
+
+        # save ip in list, and update file
+        iplist.append(address)
+        with open(constants.LOG_FILE, 'wb') as f:
+            pickle.dump(iplist, f)
+
         utils.print_log('Assigning id# ' + str(assign_id) + ' to ' + request.ip)
-        return discover_pb2.IdReply(id=assign_id)
+        return discover_pb2.IdReply(id=assign_id, ip_list=pickle.dumps(iplist))
 
 
 def serve():
