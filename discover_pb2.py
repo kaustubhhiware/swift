@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='discover',
   syntax='proto3',
   serialized_options=_b('\n\031io.grpc.examples.discoverB\rdiscoverProtoP\001\242\002\003HLW'),
-  serialized_pb=_b('\n\x0e\x64iscover.proto\x12\x08\x64iscover\"\x17\n\tIdRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"\x1a\n\x07IdReply\x12\x0f\n\x07ip_list\x18\x01 \x01(\x0c\"7\n\x0eMessageRequest\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\"5\n\x0cMessageReply\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t2?\n\x07Greeter\x12\x34\n\x08GetNodes\x12\x13.discover.IdRequest\x1a\x11.discover.IdReply\"\x00\x32Q\n\x0c\x43ollaborator\x12\x41\n\x0bSendMessage\x12\x18.discover.MessageRequest\x1a\x16.discover.MessageReply\"\x00\x42\x32\n\x19io.grpc.examples.discoverB\rdiscoverProtoP\x01\xa2\x02\x03HLWb\x06proto3')
+  serialized_pb=_b('\n\x0e\x64iscover.proto\x12\x08\x64iscover\"\x17\n\tIdRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"\x1a\n\x07IdReply\x12\x0f\n\x07ip_list\x18\x01 \x01(\x0c\"7\n\x0eMessageRequest\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\"5\n\x0cMessageReply\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x1d\n\x0f\x46ileListRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"\"\n\rFileListReply\x12\x11\n\tfile_list\x18\x01 \x01(\x0c\x32?\n\x07Greeter\x12\x34\n\x08GetNodes\x12\x13.discover.IdRequest\x1a\x11.discover.IdReply\"\x00\x32\x94\x01\n\x0c\x43ollaborator\x12\x41\n\x0bSendMessage\x12\x18.discover.MessageRequest\x1a\x16.discover.MessageReply\"\x00\x12\x41\n\tSendFiles\x12\x19.discover.FileListRequest\x1a\x17.discover.FileListReply\"\x00\x42\x32\n\x19io.grpc.examples.discoverB\rdiscoverProtoP\x01\xa2\x02\x03HLWb\x06proto3')
 )
 
 
@@ -162,10 +162,74 @@ _MESSAGEREPLY = _descriptor.Descriptor(
   serialized_end=191,
 )
 
+
+_FILELISTREQUEST = _descriptor.Descriptor(
+  name='FileListRequest',
+  full_name='discover.FileListRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='ip', full_name='discover.FileListRequest.ip', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=193,
+  serialized_end=222,
+)
+
+
+_FILELISTREPLY = _descriptor.Descriptor(
+  name='FileListReply',
+  full_name='discover.FileListReply',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='file_list', full_name='discover.FileListReply.file_list', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=224,
+  serialized_end=258,
+)
+
 DESCRIPTOR.message_types_by_name['IdRequest'] = _IDREQUEST
 DESCRIPTOR.message_types_by_name['IdReply'] = _IDREPLY
 DESCRIPTOR.message_types_by_name['MessageRequest'] = _MESSAGEREQUEST
 DESCRIPTOR.message_types_by_name['MessageReply'] = _MESSAGEREPLY
+DESCRIPTOR.message_types_by_name['FileListRequest'] = _FILELISTREQUEST
+DESCRIPTOR.message_types_by_name['FileListReply'] = _FILELISTREPLY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 IdRequest = _reflection.GeneratedProtocolMessageType('IdRequest', (_message.Message,), dict(
@@ -196,6 +260,20 @@ MessageReply = _reflection.GeneratedProtocolMessageType('MessageReply', (_messag
   ))
 _sym_db.RegisterMessage(MessageReply)
 
+FileListRequest = _reflection.GeneratedProtocolMessageType('FileListRequest', (_message.Message,), dict(
+  DESCRIPTOR = _FILELISTREQUEST,
+  __module__ = 'discover_pb2'
+  # @@protoc_insertion_point(class_scope:discover.FileListRequest)
+  ))
+_sym_db.RegisterMessage(FileListRequest)
+
+FileListReply = _reflection.GeneratedProtocolMessageType('FileListReply', (_message.Message,), dict(
+  DESCRIPTOR = _FILELISTREPLY,
+  __module__ = 'discover_pb2'
+  # @@protoc_insertion_point(class_scope:discover.FileListReply)
+  ))
+_sym_db.RegisterMessage(FileListReply)
+
 
 DESCRIPTOR._options = None
 
@@ -205,8 +283,8 @@ _GREETER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=193,
-  serialized_end=256,
+  serialized_start=260,
+  serialized_end=323,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetNodes',
@@ -229,8 +307,8 @@ _COLLABORATOR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   serialized_options=None,
-  serialized_start=258,
-  serialized_end=339,
+  serialized_start=326,
+  serialized_end=474,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendMessage',
@@ -239,6 +317,15 @@ _COLLABORATOR = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_MESSAGEREQUEST,
     output_type=_MESSAGEREPLY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SendFiles',
+    full_name='discover.Collaborator.SendFiles',
+    index=1,
+    containing_service=None,
+    input_type=_FILELISTREQUEST,
+    output_type=_FILELISTREPLY,
     serialized_options=None,
   ),
 ])

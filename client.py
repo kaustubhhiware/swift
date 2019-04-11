@@ -1,4 +1,5 @@
 from __future__ import print_function
+import ast
 from concurrent import futures
 import logging
 import constants
@@ -26,6 +27,12 @@ class Collaborator(discover_pb2_grpc.CollaboratorServicer):
         return discover_pb2.MessageReply(message_type=0, message="ack")
 
 
+    def SendFiles(self, request, context):
+        utils.print_log('Received file list request from %s' % (request.ip))
+        local_files = os.listdir(constants.SHARED_FOLDER)
+        return discover_pb2.FileListReply(file_list=pickle.dumps(local_files))
+
+
 def send(node, message):
     try:
         utils.print_log("Sending message to %s..." % (node))
@@ -50,6 +57,32 @@ def broadcast(message, ip_list):
     utils.print_log("Broadcast message complete.")
 
 
+def node_file_list(node):
+    try:
+        channel = grpc.insecure_channel(node + ':' + str(constants.MESSAGING_PORT))
+        stub = discover_pb2_grpc.CollaboratorStub(channel)
+        response = stub.SendFiles(discover_pb2.FileRequest(ip=SELF_IP))
+        return pickle.loads(ast.literal_eval(response))
+    except Exception:
+        utils.print_log('Could not retrieve file list from %s' % (node))
+        return []
+
+
+def filelist(ip_list):
+    utils.print_log("Requsting files from collaborators")
+    shared_files = []
+    for node in ip_list:
+        if node != SELF_IP:
+            node_files = node_file_list(node)
+
+            if node_files is None:
+                continue
+            for file in node_files:
+                print(file)
+
+    utils.print_log('Received following files from neighbors')
+
+
 def serve(ip_list):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     discover_pb2_grpc.add_CollaboratorServicer_to_server(Collaborator(), server)
@@ -61,14 +94,17 @@ def serve(ip_list):
         while in_command_loop:
             raw_input = input(">").strip().split()
             if raw_input[0] == "help":
-                print("Available commands are: \n help, send <IP> <Message>, bcast <Message>")
+                print("Available commands are: \n help, send <IP> <Message>, bcast <Message>, files")
             elif raw_input[0] == "send":
                 send(raw_input[1], raw_input[2])
             elif raw_input[0] == "bcast":
                 broadcast(raw_input[1], ip_list)
 
+            elif raw_input[0] == "files":
+                filelist(ip_list)
+
     except KeyboardInterrupt:
-        print("Stopping collaborator. Goodbye!")
+        utils.print_log("Stopping collaborator. Goodbye!")
         server.stop(0)
 
 

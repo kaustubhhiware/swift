@@ -45,7 +45,7 @@ def download_file_curl(url, start, end):
 	file_size = get_file_size_curl(url)
 
 	if file_size == -1:
-		return 'Could not retrieve file / file not found'
+		return False # 'Could not retrieve file / file not found'
 
 	file_name = url.split('/')[-1]
 	out_file = str(start) + '-' +str(end) + '-' + file_name
@@ -53,7 +53,7 @@ def download_file_curl(url, start, end):
 	download_command += str(start) + '-' + str(end) + ' --output ' + out_file + ' --progress-bar'
 
 	download_command_exec = os.popen(download_command).read().split('\n')
-	return
+	return True
 
 
 def get_file_size_local(file):

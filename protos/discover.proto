@@ -22,6 +22,7 @@ message IdReply {
 
 service Collaborator {
   rpc SendMessage (MessageRequest) returns (MessageReply) {}
+  rpc SendFiles (FileListRequest) returns (FileListReply) {}
 }
 
 message MessageRequest {
@@ -32,4 +33,12 @@ message MessageRequest {
 message MessageReply {
   int32 message_type = 1;
   string message = 2;
+}
+
+message FileListRequest {
+	string ip = 1;
+}
+
+message FileListReply {
+	bytes file_list = 1;
 }
