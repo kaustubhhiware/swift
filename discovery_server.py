@@ -45,7 +45,7 @@ def serve():
         while True:
             time.sleep(_ONE_DAY_IN_SECONDS)
     except KeyboardInterrupt:
-        print("Stopping discovery server. Goodbye!")
+        utils.print_log("Stopping discovery server. Goodbye!")
         server.stop(0)
 
 
