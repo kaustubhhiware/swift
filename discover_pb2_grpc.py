@@ -61,10 +61,15 @@ class CollaboratorStub(object):
         request_serializer=discover__pb2.MessageRequest.SerializeToString,
         response_deserializer=discover__pb2.MessageReply.FromString,
         )
-    self.SendFiles = channel.unary_unary(
-        '/discover.Collaborator/SendFiles',
+    self.SendFileList = channel.unary_unary(
+        '/discover.Collaborator/SendFileList',
         request_serializer=discover__pb2.FileListRequest.SerializeToString,
         response_deserializer=discover__pb2.FileListReply.FromString,
+        )
+    self.SendFiles = channel.unary_stream(
+        '/discover.Collaborator/SendFiles',
+        request_serializer=discover__pb2.FileRequest.SerializeToString,
+        response_deserializer=discover__pb2.FileReply.FromString,
         )
 
 
@@ -73,6 +78,13 @@ class CollaboratorServicer(object):
   pass
 
   def SendMessage(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def SendFileList(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -94,10 +106,15 @@ def add_CollaboratorServicer_to_server(servicer, server):
           request_deserializer=discover__pb2.MessageRequest.FromString,
           response_serializer=discover__pb2.MessageReply.SerializeToString,
       ),
-      'SendFiles': grpc.unary_unary_rpc_method_handler(
-          servicer.SendFiles,
+      'SendFileList': grpc.unary_unary_rpc_method_handler(
+          servicer.SendFileList,
           request_deserializer=discover__pb2.FileListRequest.FromString,
           response_serializer=discover__pb2.FileListReply.SerializeToString,
+      ),
+      'SendFiles': grpc.unary_stream_rpc_method_handler(
+          servicer.SendFiles,
+          request_deserializer=discover__pb2.FileRequest.FromString,
+          response_serializer=discover__pb2.FileReply.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
