@@ -37,7 +37,7 @@ def get_file_size_curl(url):
 	# -1 means could not retrieve / file not found
 
 
-def download_file_curl(url, start, end):
+def download_file_curl(url, start, end, save_location):
 	'''
 		Function to download partial content via curl.
 		This function cannot be stopped in the middle.
@@ -48,7 +48,7 @@ def download_file_curl(url, start, end):
 		return False # 'Could not retrieve file / file not found'
 
 	file_name = url.split('/')[-1]
-	out_file = str(start) + '-' +str(end) + '-' + file_name
+	out_file = save_location + '/' + str(start) + '-' +str(end) + '-' + file_name
 	download_command = 'curl "' + url+ '" -H "Proxy-Connection: keep-alive" --compressed -r '
 	download_command += str(start) + '-' + str(end) + ' --output ' + out_file + ' --progress-bar'
 
@@ -65,3 +65,6 @@ def get_file_size_local(file):
 
 	statinfo = os.stat(file)
 	return statinfo.st_size
+
+def get_file_name(url):
+	return url.split('/')[-1]
