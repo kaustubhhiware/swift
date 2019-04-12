@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='discover',
   syntax='proto3',
   serialized_options=_b('\n\031io.grpc.examples.discoverB\rdiscoverProtoP\001\242\002\003HLW'),
-  serialized_pb=_b('\n\x0e\x64iscover.proto\x12\x08\x64iscover\"\x17\n\tIdRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"\x1a\n\x07IdReply\x12\x0f\n\x07ip_list\x18\x01 \x01(\x0c\"J\n\x0eMessageRequest\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x11\n\tsender_ip\x18\x03 \x01(\t\"H\n\x0cMessageReply\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x11\n\tsender_ip\x18\x03 \x01(\t\"\x1d\n\x0f\x46ileListRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"\"\n\rFileListReply\x12\x11\n\tfile_list\x18\x01 \x01(\x0c\"a\n\x0b\x46ileRequest\x12\x11\n\tsender_ip\x18\x01 \x01(\t\x12\x11\n\tfile_name\x18\x02 \x01(\t\x12\x10\n\x08\x66ile_url\x18\x03 \x01(\t\x12\r\n\x05start\x18\x04 \x01(\x03\x12\x0b\n\x03\x65nd\x18\x05 \x01(\x03\"2\n\tFileReply\x12\x11\n\tsender_ip\x18\x01 \x01(\t\x12\x12\n\nfile_chunk\x18\x02 \x01(\x0c\x32?\n\x07Greeter\x12\x34\n\x08GetNodes\x12\x13.discover.IdRequest\x1a\x11.discover.IdReply\"\x00\x32\xd4\x01\n\x0c\x43ollaborator\x12\x41\n\x0bSendMessage\x12\x18.discover.MessageRequest\x1a\x16.discover.MessageReply\"\x00\x12\x44\n\x0cSendFileList\x12\x19.discover.FileListRequest\x1a\x17.discover.FileListReply\"\x00\x12;\n\tSendFiles\x12\x15.discover.FileRequest\x1a\x13.discover.FileReply\"\x00\x30\x01\x42\x32\n\x19io.grpc.examples.discoverB\rdiscoverProtoP\x01\xa2\x02\x03HLWb\x06proto3')
+  serialized_pb=_b('\n\x0e\x64iscover.proto\x12\x08\x64iscover\"\x17\n\tIdRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"\x1a\n\x07IdReply\x12\x0f\n\x07ip_list\x18\x01 \x01(\x0c\"J\n\x0eMessageRequest\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x11\n\tsender_ip\x18\x03 \x01(\t\"H\n\x0cMessageReply\x12\x14\n\x0cmessage_type\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x11\n\tsender_ip\x18\x03 \x01(\t\"\x1d\n\x0f\x46ileListRequest\x12\n\n\x02ip\x18\x01 \x01(\t\"\"\n\rFileListReply\x12\x11\n\tfile_list\x18\x01 \x01(\x0c\"s\n\x0b\x46ileRequest\x12\x11\n\tsender_ip\x18\x01 \x01(\t\x12\x11\n\tfile_name\x18\x02 \x01(\t\x12\x10\n\x08\x66ile_url\x18\x03 \x01(\t\x12\r\n\x05start\x18\x04 \x01(\x03\x12\x0b\n\x03\x65nd\x18\x05 \x01(\x03\x12\x10\n\x08is_local\x18\x06 \x01(\x08\"N\n\tFileReply\x12\x11\n\tsender_ip\x18\x01 \x01(\t\x12\x12\n\nfile_chunk\x18\x02 \x01(\x0c\x12\r\n\x05start\x18\x03 \x01(\x03\x12\x0b\n\x03\x65nd\x18\x04 \x01(\x03\x32?\n\x07Greeter\x12\x34\n\x08GetNodes\x12\x13.discover.IdRequest\x1a\x11.discover.IdReply\"\x00\x32\xd4\x01\n\x0c\x43ollaborator\x12\x41\n\x0bSendMessage\x12\x18.discover.MessageRequest\x1a\x16.discover.MessageReply\"\x00\x12\x44\n\x0cSendFileList\x12\x19.discover.FileListRequest\x1a\x17.discover.FileListReply\"\x00\x12;\n\tSendFiles\x12\x15.discover.FileRequest\x1a\x13.discover.FileReply\"\x00\x30\x01\x42\x32\n\x19io.grpc.examples.discoverB\rdiscoverProtoP\x01\xa2\x02\x03HLWb\x06proto3')
 )
 
 
@@ -281,6 +281,13 @@ _FILEREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='is_local', full_name='discover.FileRequest.is_local', index=5,
+      number=6, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -294,7 +301,7 @@ _FILEREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=298,
-  serialized_end=395,
+  serialized_end=413,
 )
 
 
@@ -319,6 +326,20 @@ _FILEREPLY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='start', full_name='discover.FileReply.start', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='end', full_name='discover.FileReply.end', index=3,
+      number=4, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -331,8 +352,8 @@ _FILEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=397,
-  serialized_end=447,
+  serialized_start=415,
+  serialized_end=493,
 )
 
 DESCRIPTOR.message_types_by_name['IdRequest'] = _IDREQUEST
@@ -410,8 +431,8 @@ _GREETER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=449,
-  serialized_end=512,
+  serialized_start=495,
+  serialized_end=558,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetNodes',
@@ -434,8 +455,8 @@ _COLLABORATOR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   serialized_options=None,
-  serialized_start=515,
-  serialized_end=727,
+  serialized_start=561,
+  serialized_end=773,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendMessage',

@@ -36,7 +36,6 @@ class Collaborator(discover_pb2_grpc.CollaboratorServicer):
         print(">")
         return discover_pb2.MessageReply(message_type=0, message="ack")
 
-
     def SendFileList(self, request, context):
         utils.print_log('Received file list request from %s' % (request.ip))
         local_files = os.listdir(constants.SHARED_FOLDER)
@@ -46,7 +45,6 @@ class Collaborator(discover_pb2_grpc.CollaboratorServicer):
         utils.print_log('Received file request from %s' % (request.sender_ip))
         # TODO: chunking and streaming chunks
         pass
-
 
 
 def handle_request(raw_message):
@@ -144,14 +142,16 @@ def delegate_download(file_url, nodes_list, is_local):
     if is_local:
         N = len(nodes_list)
         ranges_list = get_file_ranges(file_size, N)
+        file_url_list = [file_url] * N
         with Pool(N) as p:
-            p.map(get_local_files, zip(nodes_list, ranges_list))
+            p.map(get_local_files, zip(nodes_list, file_url_list, ranges_list))
     else:
         # Here, current node also downloads file
         N = len(nodes_list) + 1
         ranges_list = get_file_ranges(file_size, N)
+        file_url_list = [file_url] * N
         with Pool(N) as p:
-            p.map(get_remote_files, zip(nodes_list, ranges_list))
+            p.map(get_remote_files, zip(nodes_list, file_url_list, ranges_list))
 
 
 def get_file_ranges(file_size, num_nodes):
@@ -161,13 +161,35 @@ def get_file_ranges(file_size, num_nodes):
         ranges_list.append((i*alloc_size, min(file_size, (i+1)*alloc_size)))
     return ranges_list
 
-def get_local_files(node_range_pair):
-    # TODO: unimplemented
-    pass
 
-def get_remote_files(node_range_pair):
-    # TODO: unimplemented
-    pass
+def get_local_files(data_tuple):
+    channel = grpc.insecure_channel(data_tuple[0] + ':' + str(constants.MESSAGING_PORT))
+    stub = discover_pb2_grpc.CollaboratorStub(channel)
+    utils.print_log('Connected to node %s' % (data_tuple[0]))
+    file_name = download.get_file_name(data_tuple[1])
+    response = stub.SendFiles(discover_pb2.FileRequest(sender_ip=SELF_IP, file_name=file_name, file_url=data_tuple[1], start=data_tuple[2][0], end=data_tuple[2][1], is_local=True))
+    out_file = constants.DOWNLOAD_FOLDER + '/' + str(data_tuple[2][0]) + '-' +str(data_tuple[2][1]) + '-' + file_name
+    file = open(out_file, 'w')
+    file.write(response.file_chunk)
+    file.close()
+    utils.print_log('Completed download from %s' % (data_tuple[0]))
+
+
+def get_remote_files(data_tuple):
+    if data_tuple[2][0] == 0:   # If the current node is the requester
+        download.download_file_curl(data_tuple[1], data_tuple[2][0], data_tuple[2][1], constants.DOWNLOAD_FOLDER)
+    else:
+        channel = grpc.insecure_channel(data_tuple[0] + ':' + str(constants.MESSAGING_PORT))
+        stub = discover_pb2_grpc.CollaboratorStub(channel)
+        utils.print_log('Connected to node %s' % (data_tuple[0]))
+        file_name = download.get_file_name(data_tuple[1])
+        response = stub.SendFiles(discover_pb2.FileRequest(sender_ip=SELF_IP, file_name=file_name, file_url=data_tuple[1], start=data_tuple[2][0], end=data_tuple[2][1], is_local=False))
+        out_file = constants.DOWNLOAD_FOLDER + '/' + str(data_tuple[2][0]) + '-' +str(data_tuple[2][1]) + '-' + file_name
+        file = open(out_file, 'w')
+        file.write(response.file_chunk)
+        file.close()
+        utils.print_log("Completed chunk download from node %s" % (response.sender_ip))
+
 
 def serve():
     global ip_list

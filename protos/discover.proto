@@ -52,9 +52,12 @@ message FileRequest {
   string file_url = 3;
   int64 start = 4;
   int64 end = 5;
+  bool is_local = 6;
 }
 
 message FileReply {
   string sender_ip = 1;
   bytes file_chunk = 2;
+  int64 start = 3;
+  int64 end = 4;
 }
