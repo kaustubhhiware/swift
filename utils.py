@@ -1,5 +1,6 @@
 import socket
 import time
+import constants
 
 def print_prompt(discovery=False):
 	file = 'prompt_discovery' if discovery else 'prompt' 
