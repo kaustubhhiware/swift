@@ -96,7 +96,7 @@ def node_file_list(node):
     try:
         channel = grpc.insecure_channel(node + ':' + str(constants.MESSAGING_PORT))
         stub = discover_pb2_grpc.CollaboratorStub(channel)
-        response = stub.SendFileList(discover_pb2.FileRequest(ip=SELF_IP))
+        response = stub.SendFileList(discover_pb2.FileListRequest(ip=SELF_IP))
         return pickle.loads(ast.literal_eval(response))
     except Exception:
         utils.print_log('Could not retrieve file list from %s' % (node))
@@ -108,13 +108,18 @@ def filelist():
     utils.print_log("Requsting files from collaborators")
     shared_files = []
     for node in ip_list:
+        print('Node ', node)
         if node != SELF_IP:
             node_files = node_file_list(node)
 
-            if node_files is None:
-                continue
+            print('+++--- %s' % (node))
+            print(node_files)
             for file in node_files:
                 print(file)
+        else:
+            node_files = os.listdir(constants.SHARED_FOLDER)
+            for file in node_files:
+                print('Local: ', file)
 
     utils.print_log('Received following files from neighbors')
 
@@ -230,6 +235,7 @@ def run(discovery_ip):
     stub = discover_pb2_grpc.GreeterStub(channel)
     response = stub.GetNodes(discover_pb2.IdRequest(ip=SELF_IP))
     utils.print_log('Connected to server')
+    global ip_list
     ip_list = pickle.loads(response.ip_list)
     utils.print_log('All discovered clients are:')
     for id, ip in enumerate(ip_list):
