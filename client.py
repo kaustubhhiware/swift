@@ -43,8 +43,15 @@ class Collaborator(discover_pb2_grpc.CollaboratorServicer):
 
     def SendFile(self, request, context):
         utils.print_log('Received file request from %s' % (request.sender_ip))
-        # TODO: chunking and streaming chunks
-        pass
+        if request.is_local:
+            f = open(constants.SHARED_FOLDER + '/' + request.file_name, 'rb')
+            data = f.read()
+            f.close()
+            for i in range(request.start, request.end+1, constants.CHUNK_SIZE):
+                yield data[i: min(request.end, i+constants.CHUNK_SIZE)+1]
+        else:
+            # TODO: unimplemented for remote file
+            pass
 
 
 def handle_request(raw_message):
