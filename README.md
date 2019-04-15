@@ -30,7 +30,10 @@ When changing the grpc protocol, the python stubs will have to be created by run
 $ python -m grpc_tools.protoc -I./protos  --python_out=. --grpc_python_out=. ./protos/discover.proto
 ```
 
-
+```bash
+iptables -A INPUT -i wlp3s0 -p tcp --dport 4444 -j ACCEPT
+iptables -A INPUT -i wlp3s0 -p tcp --dport 8192 -j ACCEPT
+```
 ## Collaborators
 
 * Aditya Bhagwat [@eraseread](https://github.com/eraseread)

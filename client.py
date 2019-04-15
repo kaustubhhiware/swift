@@ -39,6 +39,8 @@ class Collaborator(discover_pb2_grpc.CollaboratorServicer):
     def SendFileList(self, request, context):
         utils.print_log('Received file list request from %s' % (request.ip))
         local_files = os.listdir(constants.SHARED_FOLDER)
+        print('Sending', local_files)
+        print(">")
         return discover_pb2.FileListReply(file_list=pickle.dumps(local_files))
 
     def SendFile(self, request, context):
@@ -97,7 +99,7 @@ def node_file_list(node):
         channel = grpc.insecure_channel(node + ':' + str(constants.MESSAGING_PORT))
         stub = discover_pb2_grpc.CollaboratorStub(channel)
         response = stub.SendFileList(discover_pb2.FileListRequest(ip=SELF_IP))
-        return pickle.loads(ast.literal_eval(response))
+        return pickle.loads(response.file_list)
     except Exception:
         utils.print_log('Could not retrieve file list from %s' % (node))
         return []
@@ -108,7 +110,7 @@ def filelist():
     utils.print_log("Requsting files from collaborators")
     shared_files = []
     for node in ip_list:
-        print('Node ', node)
+        # print('Node ', node)
         if node != SELF_IP:
             node_files = node_file_list(node)
 
@@ -116,10 +118,10 @@ def filelist():
             print(node_files)
             for file in node_files:
                 print(file)
-        else:
-            node_files = os.listdir(constants.SHARED_FOLDER)
-            for file in node_files:
-                print('Local: ', file)
+        # else:
+        #     node_files = os.listdir(constants.SHARED_FOLDER)
+        #     for file in node_files:
+        #         print('Local: ', file)
 
     utils.print_log('Received following files from neighbors')
 
