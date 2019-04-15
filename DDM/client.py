@@ -2,16 +2,17 @@ import sys
 import os
 import shutil
 import threading
+import os
 from utils.calculation import Calculation
 from utils.request import Request
 from utils.filehandler import FileHandler
 from utils.multithreadeddownloader import MultithreadedDownloader 
 from peerclient.threadedpeerclient import ThreadedPeerClient 
 from peerclient.peerclientconfighandler import PeerClientConfigHandler
+from utils.misc import print_log
+from server import serve
 
-
-if __name__ == '__main__':
-    
+def request_download(url):
     try:
         peer_client_config = PeerClientConfigHandler()
 
@@ -33,10 +34,10 @@ if __name__ == '__main__':
             print("Oops! Error: {}.".format(e))
 
         # check if download url supplied
-        if (len(sys.argv) < 2):
-            print ("No Download URL! Exiting ...")
-            sys.exit(0)
-        url = sys.argv[1]
+        # if (len(sys.argv) < 2):
+        #     print ("No Download URL! Exiting ...")
+        #     sys.exit(0)
+        # url = sys.argv[1]
         client = ThreadedPeerClient(url)
         # port used by peer-client to communicate with tracker
         client_tracker_bind_port = peer_client_config.client_tracker_bind_port
@@ -105,3 +106,20 @@ if __name__ == '__main__':
         filehandle.delete_dir(temp_dir)
         # exit
         sys.exit(0)
+
+if __name__ == "__main__":
+    try:
+        newpid = os.fork()
+        if newpid != 0:
+            serve()
+        else:
+            while True:
+                raw_input = input(">").strip().split()
+                if raw_input[0] == "help":
+                    print("Available commands are: \n help, request <file_url>")
+                elif raw_input[0] == "request":
+                    request_download(raw_input[1])
+                else:
+                    pass
+    except Exception as e:
+        print_log("Error: %s " % e)

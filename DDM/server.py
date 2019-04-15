@@ -4,7 +4,7 @@ from utils.filehandler import FileHandler
 from peerserver.peerserverconfighandler import PeerServerConfigHandler
 from peerserver.threadedpeerserver import ThreadedPeerServer
 
-if __name__ == '__main__':
+def serve():
 
     server = None
     filehandle = None
