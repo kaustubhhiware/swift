@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.discover";
+option java_outer_classname = "discoverProto";
+option objc_class_prefix = "HLW";
+
+package discover;
+
+// The greeting service definition.
+service Greeter {
+  rpc GetNodes (IdRequest) returns (IdReply) {}
+}
+
+message IdRequest {
+  string ip = 1;
+}
+
+message IdReply {
+  bytes ip_list = 1;
+}
+
+service Collaborator {
+  rpc SendMessage (MessageRequest) returns (MessageReply) {}
+  rpc SendFileList (FileListRequest) returns (FileListReply) {}
+  rpc SendFiles (FileRequest) returns (stream FileReply) {}
+}
+
+message MessageRequest {
+  int32 message_type = 1;
+  string message = 2;
+  string sender_ip = 3;
+}
+
+message MessageReply {
+  int32 message_type = 1;
+  string message = 2;
+  string sender_ip = 3;
+}
+
+message FileListRequest {
+	string ip = 1;
+}
+
+message FileListReply {
+	bytes file_list = 1;
+}
+
+message FileRequest {
+  string sender_ip = 1;
+  string file_name = 2;
+  string file_url = 3;
+  int64 start = 4;
+  int64 end = 5;
+  bool is_local = 6;
+}
+
+message FileReply {
+  string sender_ip = 1;
+  bytes file_chunk = 2;
+  int64 start = 3;
+  int64 end = 4;
+}

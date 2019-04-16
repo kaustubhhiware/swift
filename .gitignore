@@ -5,3 +5,4 @@ discovered.pkl
 shared/
 download/
 *.pyc
+client_shared/
