@@ -13,7 +13,7 @@ class Request:
 	def make_request(self, url, retries=5, timeout=5, proxy='http://172.16.2.30:8080/', headers=None):
 		""" function for sending request and receiving response """
 		http = None
-		print("Request Proxy: ", proxy)
+		print("Set Proxy: ", proxy)
 		if proxy:
 			http = urllib3.ProxyManager(proxy)
 		else:

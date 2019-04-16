@@ -3,27 +3,25 @@ import os
 import shutil
 import threading
 import os
+import constants
 from utils.calculation import Calculation
 from utils.request import Request
 from utils.filehandler import FileHandler
 from utils.multithreadeddownloader import MultithreadedDownloader 
 from peerclient.threadedpeerclient import ThreadedPeerClient 
-from peerclient.peerclientconfighandler import PeerClientConfigHandler
 from utils.misc import print_log
 from server import serve
 
 def request_download(url):
     try:
-        peer_client_config = PeerClientConfigHandler()
-
-        tracker_host = peer_client_config.tracker_host
-        tracker_port = peer_client_config.tracker_port
+        tracker_host = constants.TRACKER_HOST
+        tracker_port = constants.TRACKER_PORT
         tracker_server_address = (tracker_host, tracker_port)
 
-        temp_dir = peer_client_config.temp_dir
-        download_dir = peer_client_config.download_dir
-        proxy = peer_client_config.proxy
-        threads = peer_client_config.proxy
+        temp_dir = constants.CLIENT_TEMP_DIR
+        download_dir = constants.CLIENT_DOWNLOAD_DIR
+        proxy = constants.PROXY
+        threads = constants.THREADS
 
         try:
             filehandle = FileHandler()
@@ -40,7 +38,7 @@ def request_download(url):
         # url = sys.argv[1]
         client = ThreadedPeerClient(url)
         # port used by peer-client to communicate with tracker
-        client_tracker_bind_port = peer_client_config.client_tracker_bind_port
+        client_tracker_bind_port = constants.CLIENT_SERVER_PORT
 
         # fetch the list of active servers
         client.fetch_peers_list(tracker_server_address, client_tracker_bind_port)
@@ -74,7 +72,7 @@ def request_download(url):
             range_list = Calculation().get_download_ranges_list(0, filesize-1, parts)
 
             # connect with each server and send them the download details
-            client_server_bind_port = peer_client_config.client_server_bind_port
+            client_server_bind_port = constants.CLIENT_SERVER_PORT
             client.connect_with_peer_servers(range_list, temp_dir, client_server_bind_port)
 
             # wait for download to complete at each server

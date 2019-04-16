@@ -1,25 +1,24 @@
 import sys
+import constants
 from utils.calculation import Calculation
 from utils.filehandler import FileHandler
-from peerserver.peerserverconfighandler import PeerServerConfigHandler
 from peerserver.threadedpeerserver import ThreadedPeerServer
 
 def serve():
 
     server = None
     filehandle = None
-    peer_server_config = PeerServerConfigHandler()
 
-    temp_dir = peer_server_config.temp_dir
-    tracker_host = peer_server_config.tracker_host
-    tracker_port = peer_server_config.tracker_port
+    temp_dir = constants.SERVER_TEMP_DIR
+    tracker_host = constants.TRACKER_HOST
+    tracker_port = constants.TRACKER_PORT
     tracker_server_address = (tracker_host, tracker_port)
     peer_server_host = ''
-    peer_server_port = peer_server_config.peer_server_port
+    peer_server_port = constants.PEER_SERVER_PORT
     peer_server_address = (peer_server_host, peer_server_port)
 
     # port used by peer-server to communicate with tracker-server
-    bind_port = peer_server_config.server_tracker_bind_port
+    bind_port = constants.PEER_SERVER_PORT
 
     filehandle = FileHandler()
     filehandle.create_dir(temp_dir)
@@ -29,8 +28,8 @@ def serve():
         # register the server with tracker
         server.register_with_tracker(tracker_server_address, bind_port)
 
-        proxy = peer_server_config.proxy
-        threads = peer_server_config.threads
+        proxy = constants.PROXY
+        threads = constants.THREADS
         # listen for download requests from client
         server.listen(temp_dir, threads, proxy)
 

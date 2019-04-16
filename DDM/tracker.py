@@ -1,14 +1,13 @@
 import sys
 import threading
-from trackermodule.trackerconfighandler import TrackerConfigHandler
+import constants
 from trackermodule.threadedtrackerserver import ThreadedTrackerServer
 
 if __name__ == "__main__":
     server = None
     try:
-        tracker_config = TrackerConfigHandler()
         tracker_host = ''
-        tracker_port = tracker_config.tracker_port
+        tracker_port = constants.TRACKER_PORT
         tracker_server_address = (tracker_host, tracker_port)
         server = ThreadedTrackerServer(tracker_server_address)
         server.listen()
