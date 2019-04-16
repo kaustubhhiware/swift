@@ -1,5 +1,5 @@
 import sys
-import constants
+from utils import constants
 from utils.calculation import Calculation
 from utils.filehandler import FileHandler
 from peerserver.threadedpeerserver import ThreadedPeerServer

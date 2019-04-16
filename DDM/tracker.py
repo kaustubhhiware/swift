@@ -1,6 +1,6 @@
 import sys
 import threading
-import constants
+from utils import constants
 from trackermodule.threadedtrackerserver import ThreadedTrackerServer
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ import os
 import shutil
 import threading
 import os
-import constants
+from utils import constants
 from utils.calculation import Calculation
 from utils.request import Request
 from utils.filehandler import FileHandler
