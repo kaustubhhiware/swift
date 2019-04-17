@@ -129,7 +129,7 @@ def request_download(url):
             # after receiving all parts, merge them
             with open(filepath,'wb') as wfd:
                 for f in range(parts):
-                    tempfilepath = temp_dir + "/part" + str(f)
+                    tempfilepath = temp_dir + "part" + str(f)
                     with open(tempfilepath, "rb") as fd:
                         shutil.copyfileobj(fd, wfd)     
                     # delete copied segment

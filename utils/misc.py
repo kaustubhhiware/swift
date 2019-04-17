@@ -2,7 +2,7 @@ import socket
 import time
 
 def print_prompt(discovery=False):
-	file = 'prompt_discovery' if discovery else 'prompt' 
+	file = 'utils/prompt_discovery' if discovery else 'utils/prompt' 
 	with open(file, 'r') as f:
 		txt = f.readlines()
 	txt = ''.join(txt)
