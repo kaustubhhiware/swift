@@ -6,6 +6,7 @@ import socket
 import multiprocessing
 import json
 import os
+import time
 from utils import constants
 from utils.request import Request
 from utils.multithreadeddownloader import MultithreadedDownloader
@@ -15,12 +16,12 @@ from utils.filehandler import FileHandler
 
 class PeerClientThread(threading.Thread):
     """ class for a thread which handles a peer-client connection"""
-    def __init__(self, client_conn, client_addr, hbeat_client_conn, hbeat_client_addr, temp_dir, threads, proxy):
+    def __init__(self, client_conn, client_addr, temp_dir, threads, proxy):
         threading.Thread.__init__(self)
         self.client_conn = client_conn
-        self.hbeat_client_conn = hbeat_client_conn
+        # self.hbeat_client_conn = hbeat_client_conn
         self.client_addr = client_addr
-        self.hbeat_client_addr = hbeat_client_addr
+        # self.hbeat_client_addr = hbeat_client_addr
         self.temp_dir = temp_dir
         self.threads = threads
         self.proxy = proxy
@@ -28,12 +29,15 @@ class PeerClientThread(threading.Thread):
     def run(self):
         pid = os.fork()
         if pid == 0: # Heartbeat thread
-            size = 1024
-            msg = self.hbeat_client_conn.recv(size)
-            if msg == "hbeat":
-                print("[+] Received Heartbeat from {}: {}".format(self.client_addr, msg))
-                self.hbeat_client_conn.send("ack")
-                print("[+] Sent ack to {}: {}".format(self.client_addr, msg))
+            pass
+            # size = 1024
+            # msg = self.hbeat_client_conn.recv(size)
+            # if msg == "hbeat":
+                # print("[+] Received Heartbeat from {}: {}".format(self.client_addr, msg))
+            # while True:
+            #     self.hbeat_client_conn.send("ack")
+            #     time.sleep(5)
+            #     print("[+] Sent heartbeat to {}: {}".format(self.client_addr, msg))
         else:
             size = 1024
             # receive {"url":"", "range-left":"", "range-right":""} from client

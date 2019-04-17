@@ -162,7 +162,7 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
     except ConnectionError:
         print ("Connection Error! Falling back to download at client...")
     except Exception as e:
-        print("Oops! Error: {}.".format(e))
+        print("Download request error: {}.".format(e))
         # delete the file if error occured
         filehandle.delete_file(filepath)
     finally:
@@ -177,6 +177,7 @@ if __name__ == "__main__":
         newpid = os.fork()
         if newpid != 0:
             serve()
+            # pass
         else:
             while True:
                 raw_input = input(">").strip().split()
