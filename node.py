@@ -58,7 +58,7 @@ def serve():
         # exit
         sys.exit(0)
 
-def request_download(url):
+def request_download(url, firsttime=True, targetLocation=None, missing_range=None):
     try:
         tracker_host = constants.TRACKER_HOST
         tracker_port = constants.TRACKER_PORT
@@ -85,13 +85,20 @@ def request_download(url):
         client.fetch_peers_list(tracker_server_address, client_tracker_bind_port)
 
         # make request to url to get information about file
-        req = Request()
-        response = req.make_request(url, proxy=proxy)
-        req.close_connection(response) 
+        if firsttime:
+            req = Request()
+            response = req.make_request(url, proxy=proxy)
+            req.close_connection(response) 
 
-        # get the filesize
-        filesize = int(response.headers['Content-Length'])
+            # get the filesize
+            filesize = int(response.headers['Content-Length'])
+        else:
+            filesize = missing_range[1] - missing_range[0] + 1
+
         filename = os.path.basename(url.replace("%20", "_"))
+        if not firsttime and targetLocation is not None:
+        	filepath = targetLocation
+        else:
         filepath =  download_dir + filename
 
         # if range-download is not supported, use simple download
@@ -104,13 +111,20 @@ def request_download(url):
             print ("No peer servers! Using default download...")
             MultithreadedDownloader().download(url, 0, filesize-1, filepath, 
                                             temp_dir, response, threads, proxy)
+        elif filesize <= constants.CHUNK_SIZE:
+            print ("File size small enough to be downloaded individually...")
+            MultithreadedDownloader().download(url, 0, filesize-1, filepath, 
+                                            temp_dir, response, threads, proxy)            
         else:
             print ("Peer Servers found! Distributing download...")
             print ("peer-client filesize: {}".format(filesize))
 
             # get the download ranges to be assigned to each
             parts = client.num_peer_servers()
-            range_list = Calculation().get_download_ranges_list(0, filesize-1, parts)
+            if firsttime:
+                range_list = Calculation().get_download_ranges_list(0, filesize-1, parts)
+            else:
+                range_list = Calculation().get_download_ranges_list(missing_range[0], missing_range[1], parts)
 
             # connect with each server and send them the download details
             client_server_bind_port = constants.CLIENT_SERVER_PORT
@@ -125,7 +139,18 @@ def request_download(url):
                 if t is main_thread:
                     continue
                 t.join()
-                
+            
+            # Check which parts have not been downloaded yet, and download them with specific file name
+            for part_num in range(parts):
+            	tempfilepath = temp_dir + 'part' + str(part_num)
+            	if os.path.exists(tempfilepath)
+            		continue
+                print ('[+] Node # {} crashed. Reassinging its downloads'.format(str(part)))
+            	request_download(url, firsttime = False,
+            					targetLocation = tempfilepath, 
+            					missing_range = range_list[part_num])
+
+
             # after receiving all parts, merge them
             with open(filepath,'wb') as wfd:
                 for f in range(parts):
