@@ -95,8 +95,11 @@ class PeerClientThread(threading.Thread):
         file = open(filepath, 'rb')
         chunk = file.read(1024)
         print('Sending...')
-        while chunk:
-            self.client_conn.send(chunk)
-            chunk = file.read(1024)
-        file.close()
-        print("Done Sending File!")
+        try:
+            while chunk:
+                self.client_conn.send(chunk)
+                chunk = file.read(1024)
+            file.close()
+            print("Done Sending File!")
+        except IOError as e:
+            print("Client disconnected, Got IOError: {}. Stopping download".format(e))
