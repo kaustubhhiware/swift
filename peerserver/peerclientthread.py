@@ -6,6 +6,7 @@ import socket
 import multiprocessing
 import json
 import os
+import time
 from utils import constants
 from utils.request import Request
 from utils.multithreadeddownloader import MultithreadedDownloader
@@ -28,12 +29,14 @@ class PeerClientThread(threading.Thread):
     def run(self):
         pid = os.fork()
         if pid == 0: # Heartbeat thread
-            size = 1024
-            msg = self.hbeat_client_conn.recv(size)
-            if msg == "hbeat":
-                print("[+] Received Heartbeat from {}: {}".format(self.client_addr, msg))
+            # size = 1024
+            # msg = self.hbeat_client_conn.recv(size)
+            # if msg == "hbeat":
+                # print("[+] Received Heartbeat from {}: {}".format(self.client_addr, msg))
+            while True:
                 self.hbeat_client_conn.send("ack")
-                print("[+] Sent ack to {}: {}".format(self.client_addr, msg))
+                time.sleep(5)
+                print("[+] Sent heartbeat to {}: {}".format(self.client_addr, msg))
         else:
             size = 1024
             # receive {"url":"", "range-left":"", "range-right":""} from client
