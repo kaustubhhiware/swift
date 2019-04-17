@@ -58,7 +58,7 @@ def serve():
         # exit
         sys.exit(0)
 
-def request_download(url, firsttime=True, targetLocation=None, missing_range=None):
+def request_download(url, firsttime=True, targetLocation=None, missing_range=None, attempt_num=0):
     try:
         tracker_host = constants.TRACKER_HOST
         tracker_port = constants.TRACKER_PORT
@@ -85,10 +85,10 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
         client.fetch_peers_list(tracker_server_address, client_tracker_bind_port)
 
         # make request to url to get information about file
+        req = Request()
+        response = req.make_request(url, proxy=proxy)
+        req.close_connection(response) 
         if firsttime:
-            req = Request()
-            response = req.make_request(url, proxy=proxy)
-            req.close_connection(response) 
 
             # get the filesize
             filesize = int(response.headers['Content-Length'])
@@ -97,23 +97,27 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
 
         filename = os.path.basename(url.replace("%20", "_"))
         if not firsttime and targetLocation is not None:
-        	filepath = targetLocation
+            filepath = targetLocation
         else:
-        filepath =  download_dir + filename
+            filepath =  download_dir + filename
 
+        if firsttime:
+            start, end = 0, filesize-1
+        else:
+            start, end = missing_range
         # if range-download is not supported, use simple download
         if response.headers['Accept-Ranges'] != 'bytes':
             print ("URL doesn't support range download! Using default download...")
-            MultithreadedDownloader().download(url, 0, filesize-1, filepath, 
+            MultithreadedDownloader().download(url, start, end, filepath, 
                                             temp_dir, response, threads, proxy)
         # if servers doesn't exist, use simple download
         elif client.num_peer_servers() == 0:
             print ("No peer servers! Using default download...")
-            MultithreadedDownloader().download(url, 0, filesize-1, filepath, 
+            MultithreadedDownloader().download(url, start, end, filepath, 
                                             temp_dir, response, threads, proxy)
         elif filesize <= constants.CHUNK_SIZE:
             print ("File size small enough to be downloaded individually...")
-            MultithreadedDownloader().download(url, 0, filesize-1, filepath, 
+            MultithreadedDownloader().download(url, start, end, filepath, 
                                             temp_dir, response, threads, proxy)            
         else:
             print ("Peer Servers found! Distributing download...")
@@ -126,9 +130,12 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
             else:
                 range_list = Calculation().get_download_ranges_list(missing_range[0], missing_range[1], parts)
 
+            print('Jobs')
+            for each in zip(range_list, list(client.peer_servers_set)):
+                print(each)
             # connect with each server and send them the download details
             client_server_bind_port = constants.CLIENT_SERVER_PORT
-            client.connect_with_peer_servers(range_list, temp_dir, client_server_bind_port)
+            client.connect_with_peer_servers(range_list, temp_dir, client_server_bind_port, attempt_num)
 
             # wait for download to complete at each server
             # except main_thread, calling join() for each thread
@@ -140,25 +147,38 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
                     continue
                 t.join()
             
+            print('All threads done')
             # Check which parts have not been downloaded yet, and download them with specific file name
             for part_num in range(parts):
-            	tempfilepath = temp_dir + 'part' + str(part_num)
-            	if os.path.exists(tempfilepath)
-            		continue
-                print ('[+] Node # {} crashed. Reassinging its downloads'.format(str(part)))
-            	request_download(url, firsttime = False,
-            					targetLocation = tempfilepath, 
-            					missing_range = range_list[part_num])
+                tempfilepath = temp_dir + 'part' + str(attempt_num) + '_' + str(part_num)
+                assigned_range = range_list[part_num]
+                actual_file_size = os.stat(tempfilepath).st_size - 1
+                expected_file_size = assigned_range[1] - assigned_range[0]
+
+                if os.path.exists(tempfilepath) and expected_file_size == actual_file_size:
+                    print('Part num', str(part_num), 'exists of ', parts)
+                    continue
+                if os.path.exists(tempfilepath):
+                    filehandle.delete_file(tempfilepath)
+                print('Got ', str(actual_file_size), ' expected ',expected_file_size)
+                print ('[+] Node # {} crashed. Reassigning its downloads'.format(str(part_num)))
+                request_download(url, firsttime = False,
+                                targetLocation = tempfilepath, 
+                                missing_range = range_list[part_num], 
+                                attempt_num = attempt_num + 1)
 
 
             # after receiving all parts, merge them
             with open(filepath,'wb') as wfd:
                 for f in range(parts):
-                    tempfilepath = temp_dir + "part" + str(f)
+                    tempfilepath = temp_dir + "part" + str(attempt_num) + '_' + str(f)
+                    print('Reassembling ', tempfilepath)
                     with open(tempfilepath, "rb") as fd:
                         shutil.copyfileobj(fd, wfd)     
                     # delete copied segment
                     filehandle.delete_file(tempfilepath)
+            print('Done with the download of ',filepath)
+
     except ConnectionError:
         print ("Connection Error! Falling back to download at client...")
     except Exception as e:
@@ -167,9 +187,13 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
         filehandle.delete_file(filepath)
     finally:
         # delete temporary directory
-        filehandle.delete_dir(temp_dir)
+        # filehandle.delete_dir(temp_dir)
         # exit
-        sys.exit(0)
+        print('attempt_num', attempt_num, 'complete')
+        # if attempt_num == 0:
+        #     print('k bye')
+        #     sys.exit(0)
+        return
 
 if __name__ == "__main__":
     print_prompt()

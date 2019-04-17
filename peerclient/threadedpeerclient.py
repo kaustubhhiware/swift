@@ -46,7 +46,7 @@ class ThreadedPeerClient:
         """returns number of peer servers"""
         return len(self.peer_servers_set)
 
-    def connect_with_peer_servers(self, range_list, temp_dir, client_server_bind_port):
+    def connect_with_peer_servers(self, range_list, temp_dir, client_server_bind_port, attempt_num):
         """create connection with peer servers"""
         print("Trying to connect to peer servers...")
         part_num = 0
@@ -58,7 +58,8 @@ class ThreadedPeerClient:
                 download_range,
                 part_num,
                 temp_dir,
-                client_server_bind_port
+                client_server_bind_port,
+                attempt_num
             )
             part_num += 1
             #new_server_thread.daemon = True

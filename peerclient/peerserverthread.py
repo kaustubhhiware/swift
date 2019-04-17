@@ -12,7 +12,7 @@ class PeerServerThread(threading.Thread):
     ''' establishes and handles the connection to respective peer-server'''
 
     def __init__(self, url, peer_server_addr, download_range, part_num,
-                 temp_dir, client_server_bind_port):
+                 temp_dir, client_server_bind_port, attempt_num):
         threading.Thread.__init__(self)
         # port used by thread to communicate with respective peer-server
         self.client_server_bind_port = client_server_bind_port
@@ -22,6 +22,7 @@ class PeerServerThread(threading.Thread):
         self.temp_dir = temp_dir
         self.download_range = download_range
         self.part_num = part_num
+        self.attempt_num = attempt_num
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind(('', self.client_server_bind_port))
@@ -69,7 +70,7 @@ class PeerServerThread(threading.Thread):
                 self.sock.sendall(download_info)
                 print("Download info sent: {}".format(download_info))
 
-                filepath = self.temp_dir + 'part{}'.format(self.part_num)
+                filepath = self.temp_dir + 'part{}'.format(str(self.attempt_num) + '_' + str(self.part_num))
                 self.receive_file_part(filepath)
                 is_downloaded = True
                 self.close_connection()
