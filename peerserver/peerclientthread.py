@@ -5,6 +5,8 @@ import threading
 import socket
 import multiprocessing
 import json
+import os
+from utils import constants
 from utils.request import Request
 from utils.multithreadeddownloader import MultithreadedDownloader
 from utils.calculation import Calculation
@@ -16,62 +18,75 @@ class PeerClientThread(threading.Thread):
     def __init__(self, client_conn, client_addr, temp_dir, threads, proxy):
         threading.Thread.__init__(self)
         self.client_conn = client_conn
+        self.hbeat_client_conn = (client_conn[0], constants.HEARTBEAT_PORT)
         self.client_addr = client_addr
         self.temp_dir = temp_dir
         self.threads = threads
         self.proxy = proxy
+        self.hbeat_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.hbeat_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.hbeat_sock.bind(self.hbeat_client_conn)
 
     def run(self):
-        size = 1024
-        # receive {"url":"", "range-left":"", "range-right":""} from client
-        msg = self.client_conn.recv(size)
-        if msg:
-            msg = msg.decode()
-            print("[+] Received Message: {}".format(msg))
-            msg = json.loads(msg)
+        pid = os.fork()
+        if pid == 0: # Heartbeat thread
+            self.hbeat_sock.listen(5)
+            self.hbeat_client_conn, client_addr = self.hbeat_sock.accept()
+            size = 1024
+            msg = self.hbeat_client_conn.recv(size)
+            if msg == "hbeat":
+                msg.hbeat_client_conn.send("ack")
+        else:
+            size = 1024
+            # receive {"url":"", "range-left":"", "range-right":""} from client
+            msg = self.client_conn.recv(size)
+            if msg:
+                msg = msg.decode()
+                print("[+] Received Message: {}".format(msg))
+                msg = json.loads(msg)
 
-            # generate a random name for file
-            filename = Calculation().generate_random_string(12)
-            filepath = self.temp_dir + filename
+                # generate a random name for file
+                filename = Calculation().generate_random_string(12)
+                filepath = self.temp_dir + filename
 
-            # use request to download
-            url = msg['url']
-            range_left = msg['range-left']
-            range_right = msg['range-right']
-            response = Request().make_request(url, self.proxy)
+                # use request to download
+                url = msg['url']
+                range_left = msg['range-left']
+                range_right = msg['range-right']
+                response = Request().make_request(url, self.proxy)
 
-            # use Multiprocess to download using multithreading
-            print("starting new process to download {}".format(filename))
-            process = multiprocessing.Process(
-                target=MultithreadedDownloader().download,
-                args=(
-                    url,
-                    range_left,
-                    range_right,
-                    filepath,
-                    self.temp_dir,
-                    response,
-                    self.threads,
-                    self.proxy,
+                # use Multiprocess to download using multithreading
+                print("starting new process to download {}".format(filename))
+                process = multiprocessing.Process(
+                    target=MultithreadedDownloader().download,
+                    args=(
+                        url,
+                        range_left,
+                        range_right,
+                        filepath,
+                        self.temp_dir,
+                        response,
+                        self.threads,
+                        self.proxy,
+                    )
                 )
-            )
-            process.start()
-            process.join()
-            print('Out of process for file {}'.format(filename))
+                process.start()
+                process.join()
+                print('Out of process for file {}'.format(filename))
 
-            # send the downloaded file part to peer-client
-            self.send_file_part(filepath)
+                # send the downloaded file part to peer-client
+                self.send_file_part(filepath)
 
-            # let peer-client know that file sending is done
-            self.client_conn.shutdown(socket.SHUT_RDWR)
+                # let peer-client know that file sending is done
+                self.client_conn.shutdown(socket.SHUT_RDWR)
 
-            # close connection with peer-client
-            self.client_conn.close()
-            print("[-] Client Disconnected: {}".format(self.client_addr))
+                # close connection with peer-client
+                self.client_conn.close()
+                print("[-] Client Disconnected: {}".format(self.client_addr))
 
-            # delete temp file
-            FileHandler().delete_file(filepath)
-            print("[-] Temp File Deleted.")
+                # delete temp file
+                FileHandler().delete_file(filepath)
+                print("[-] Temp File Deleted.")
 
     def send_file_part(self, filepath):
         """ function for sending file at 'filepath' through socket to client """
