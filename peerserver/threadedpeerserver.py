@@ -2,6 +2,7 @@
 Handles connection with clients
 """
 import socket
+from utils import constants
 from peerserver.peerclientthread import PeerClientThread
 
 
@@ -12,6 +13,9 @@ class ThreadedPeerServer:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind(self.server_address)
+        self.hbeat_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.hbeat_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.hbeat_sock.bind((self.server_address[0], constants.HEARTBEAT_PORT))
 
     def register_with_tracker(self, tracker_server_address, bind_port):
         """ connect to tracker and register ip """
@@ -33,15 +37,19 @@ class ThreadedPeerServer:
         """ Listen for client connections """
         print("Server Proxy: ", proxy)
         self.sock.listen(5)
+        self.hbeat_sock.listen(5)
         print("[+] Listening for clients...")
         while True:
             client_conn, client_addr = self.sock.accept()
+            hbeat_client_conn, hbeat_client_addr = self.hbeat_sock.accept()
             print("[+] Client Connected: {}".format(client_addr))
             # client.settimeout(60)
             # assigning a thread to each client connected
             new_client_thread = PeerClientThread(
                 client_conn,
                 client_addr,
+                hbeat_client_conn,
+                hbeat_client_addr,
                 temp_dir,
                 threads,
                 proxy

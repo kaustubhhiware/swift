@@ -92,7 +92,7 @@ def request_download(url):
         # get the filesize
         filesize = int(response.headers['Content-Length'])
         filename = os.path.basename(url.replace("%20", "_"))
-        filepath =  download_dir + '/' + filename 
+        filepath =  download_dir + filename
 
         # if range-download is not supported, use simple download
         if response.headers['Accept-Ranges'] != 'bytes':

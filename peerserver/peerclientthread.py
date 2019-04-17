@@ -15,27 +15,25 @@ from utils.filehandler import FileHandler
 
 class PeerClientThread(threading.Thread):
     """ class for a thread which handles a peer-client connection"""
-    def __init__(self, client_conn, client_addr, temp_dir, threads, proxy):
+    def __init__(self, client_conn, client_addr, hbeat_client_conn, hbeat_client_addr, temp_dir, threads, proxy):
         threading.Thread.__init__(self)
         self.client_conn = client_conn
-        self.hbeat_client_conn = (client_conn[0], constants.HEARTBEAT_PORT)
+        self.hbeat_client_conn = hbeat_client_conn
         self.client_addr = client_addr
+        self.hbeat_client_addr = hbeat_client_addr
         self.temp_dir = temp_dir
         self.threads = threads
         self.proxy = proxy
-        self.hbeat_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.hbeat_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.hbeat_sock.bind(self.hbeat_client_conn)
 
     def run(self):
         pid = os.fork()
         if pid == 0: # Heartbeat thread
-            self.hbeat_sock.listen(5)
-            self.hbeat_client_conn, client_addr = self.hbeat_sock.accept()
             size = 1024
             msg = self.hbeat_client_conn.recv(size)
             if msg == "hbeat":
-                msg.hbeat_client_conn.send("ack")
+                print("[+] Received Heartbeat from {}: {}".format(self.client_addr, msg))
+                self.hbeat_client_conn.send("ack")
+                print("[+] Sent ack to {}: {}".format(self.client_addr, msg))
         else:
             size = 1024
             # receive {"url":"", "range-left":"", "range-right":""} from client

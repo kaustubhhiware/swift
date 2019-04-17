@@ -82,7 +82,6 @@ class PeerServerThread(threading.Thread):
         print("Done Receiving!")
 
     def heartbeat(self):
-        self.hbeat_sock.connect(self.peer_server_addr)
         hbeat_request = "hbeat"
         print("Requesting server status from %s" % (self.peer_server_addr))
         self.hbeat_sock.send(hbeat_request)
@@ -91,11 +90,13 @@ class PeerServerThread(threading.Thread):
             reply = self.hbeat_sock.recv(size)
             if reply == "ack":
                 return True
-        except Exception as e:
+        except Exception:
             return False
 
     def close_connection(self):
         """ Closes connection """
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
+        self.hbeat_sock.shutdown(socket.SHUT_RDWR)
+        self.hbeat_sock.close()
         print("[-] Peer-Server Disconnected: {}".format(self.peer_server_addr))
