@@ -95,3 +95,18 @@ class PeerClientThread(threading.Thread):
             misc.print_log ("[i] Done Sending File!")
         except IOError as e:
             misc.print_log ("[!] Client disconnected, Got IOError: {}. Stopping download".format(e))
+
+    def heartbeat(self):
+        print("Requesting server status from %s" % (self.client_addr))
+        size = 1024
+        try:
+            reply = self.client_conn.recv(size, socket.MSG_PEEK)
+            if reply > 0:
+                print("Received heartbeat from %s" % (self.client_addr))
+                return True
+            else:
+                print("Connection Error: could not get heartbeat from %s" % (self.client_addr))
+                return False
+        except Exception:
+            print("Connection Error: could not get heartbeat from %s" % (self.client_addr))
+            return False
