@@ -2,7 +2,7 @@ import random
 import string
 
 INT_MAX = 2147483647
-INT_ARBIT = INT_MAX / 300
+INT_ARBIT = int(INT_MAX / 300)
 
 def get_download_sizes_list(filesize, parts):
     """
@@ -37,5 +37,5 @@ def generate_random_string(length):
 
     for l in range(length):
         index = (index + INT_ARBIT) % max_length
-        name += alphabets[index]
+        name += alphanumeric[index]
     return name

@@ -1,55 +1,55 @@
-# Distributed Downloader and Merger (DDM)
+# swift
+```
+   _____         _ ______ 
+  / ___/      __(_) __/ /_
+  \__ \ | /| / / / /_/ __/
+ ___/ / |/ |/ / / __/ /_  
+/____/|__/|__/_/_/  \__/ 
+```
 
-Distributed Download Manager is a P2P software that is designed to accomplish the task of downloading large files using a
-distributed divide and conquer paradigm. It works on the idea of dividing a file into multiple parts (download ranges) and
-assigning the task of downloading a file part to each peer in a network. Every participating peer then downloads the assigned
-file part locally and sends it to the local client which requested the download, using a socket connection. The local client
-then merges the received parts to get the complete file.
+Collaborative Download: CS60002 Distributed systems project
 
-### Architechture
+Swift is designed to use to solve the problem of huge file downloads by leveraging a distributed approach. It divided a file into chunks, which are assigned to be downloaded by its peers/ collaborators. Once every peer completes its download, the chunk is sent back to the requester and local cache is deleted. The requester finally reassembles the requested file by merging the chunks it receives from its peers.
 
-DDM is designed to work on a local network of systems that are also connected to internet. There are basically three types
-of systems in a DDM network - tracker, peer server and peer client.
-* A tracker server is a system whose main task is to keep information regarding particpating systems. It keeps IP addresses
-of all the peer servers in the network, and, supplies this information to peer clients which want to perform distributed
-download.
-* Peer servers are systems in the network which want to help peer client in performing distributed download. These systems
-register themselves with the tracker server and keep listening for connections from clients. When they exit, they send
-a `remove` request to tracker, which then removes them from list of current listening servers.
-* Peer clients are systems in the network which want to download a file from internet using DDM. They require file URL to
-download the file. They ask tracker about currently available peer servers and send each of them some range of file to download.
-Peer servers download range of files assigned to them by peer clients and send file parts to respective clients.
+Swift is designed to work on a lcoal network of systems (strongly connected), which are also connected to internet. A special node keeps track of nodes in this collaborative network, updating and sending peers list to any new / downloading node. This special node is called the discovery, and it does not itself participate in the download process. All other nodes execute a server and a client, the server for handling downloads and the client for handling user requests.
 
-### How to run?
+## Features
 
-Some important points to consider before running DDM -
-* You need to install `Python 3` and `pip` to run this project. 
-* It is recommended that you should try this project on a network of multiple systems. Each system should have active
-internet connections and Linux based OS. 
-* It is recommended that you create a python virtual environment to install packages from `requirements.txt`.
-* Since `server.py` and `client.py` need to create files and directories, you might have to run these using `sudo`.
+* Crash resistant - If a node crashes during download, its job is automatically reassinged to all other nodes.
+* Simultaneous downloads - Since every download is executed on a thread, multiple nodes can request for multiple files.
+* Speedup -TBD
 
-1. Clone the repo in all the systems which plan to run DDM.
-2. Open the terminal and go into the directory where DDM is cloned.
-3. Type `pip install -r requirements` and wait for packages to install.
-4. For each type of system, i.e. tracker, peer server or peer client, you may specify configuration in config files.
-5. Choose a system to act as tracker. In tracker system, type `python tracker.py` and press Enter. This will start the 
-tracker server.
-6. On all other systems that are participating in download process, run peer server by running `python server.py`. This
-will start peer server on each system.
-7. Now select a system in the network that wants to download file from internet. To download file, say, at sample url
-like - https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_10mb.mp4 , run dowload command as
-`python client.py https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_10mb.mp4`
-8. The process of distributed download starts. If there are no errors, you will find the downloaded file in download directory
-specified in config file.
+## Setup
 
+```bash
+$ pip3 install -r requirements.txt
+```
 
-NOTE : DDM is just a fun project that I worked on. There is still room for lot of improvements. So, please feel free to
-try DDM, submit issues, feature requests and bug fixes.
+```bash
+sudo ufw allow from any to any port 8000 proto tcp
+sudo ufw allow from any to any port 5000 proto tcp
+sudo ufw allow from any to any port 6000 proto tcp
+```
 
-### TODO - A list of possible enhancements
+## Running the project
 
-1. Graphical User Interface - A GUI that would allow to change settings (which are stored in configfiles), adding download url,
-showing download progress etc.
-2. Packaging to support install in different Operating systems like deb, rpm etc.
-3. Porting to other platforms like Android, Windows, Mac etc.
+We need to run a central discovery server, since KGP's internet disables ICMP messages and we cannot broadcast to computers outside our subnet.
+
+```bash
+$ python3 discovery.py
+```
+
+The IP of the discovery server must be known to every connecting node. The discovery node can also be a collaborative node.
+
+```bash
+$ python3 node.py
+```
+
+## Collaborators
+
+* Kaustubh Hiware [@kaustubhhiware](https://github.com/kaustubhhiware)
+* Surya Midatala [@kofls](https://github.com/kofls)
+* Aditya Bhagwat [@eraseread](https://github.com/eraseread)
+* Pranay Pratyush [@pranaypratyush](https://github.com/pranaypratyush)
+
+Note, run `pipreqs . --force` before pushing.

@@ -116,7 +116,7 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
                 print(each)
             # connect with each server and send them the download details
             client_server_bind_port = constants.CLIENT_SERVER_PORT
-            client.connect_with_peer_servers(range_list, temp_dir, client_server_bind_port, attempt_num, filename)
+            client.connect_with_peer_servers(range_list, attempt_num, filename)
 
             # wait for download to complete at each server
             # except main_thread, calling join() for each thread
@@ -137,7 +137,7 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
                 expected_file_size = assigned_range[1] - assigned_range[0]
 
                 if os.path.exists(tempfilepath) and expected_file_size == actual_file_size:
-                    misc.print_log ('[d] Part num' + str(part_num) + 'exists of ' +  str(parts))
+                    misc.print_log ('[d] Part num ' + str(part_num) + ' exists of ' +  str(parts))
                     continue
                 misc.delete_file(tempfilepath)
                 misc.print_log ( '[d][!] Got ' + str(actual_file_size) + ' expected '+ str(expected_file_size) )

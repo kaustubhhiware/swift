@@ -20,7 +20,20 @@ def getNetworkIp():
 
 
 def print_log(message):
-    print(time.strftime('[%d %b %Y - %H:%M:%S]') + str(message))
+    # print(time.strftime('[%d %b %Y - %H:%M:%S]') + str(message))
+    now = time.time()
+    mlsec = repr(now).split('.')[1][:3]
+    print (time.strftime("[%F - %H:%M:%S.{}]".format(mlsec), time.localtime(now)) + str(message))
+
+
+def get_seconds(timestr):
+    l = timestr.split(':')
+    return float(l[2]) + 60 * (int(l[1]) + 60 * int(l[0]) )
+
+
+def time_diff(time_a, time_b, time_c):
+    time_a, time_b, time_c = get_seconds(time_a), get_seconds(time_b), get_seconds(time_c)
+    print(time_b - time_a, '\t', time_c - time_b, '\t', time_c - ta)
 
 
 def get_file_size_local(file):

@@ -39,7 +39,7 @@ def download_range(url, filepath, range_left, range_right):
                 break
             fp.write(data)
             downloaded += sys.getsizeof(data) 
-            misc.print_log ("\r[i] {0:.2f} MB".format(downloaded/(1024*1024)), end="")
+            print ("\r[i] {0:.2f} MB".format(downloaded/(1024*1024)), end="")
 
     close_connection(resp)
 

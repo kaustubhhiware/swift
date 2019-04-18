@@ -4,7 +4,7 @@
 import socket
 from discovery.nettracker import NetTracker
 from discovery.peerthread import PeerThread
-
+from utils import misc
 
 class ThreadedDiscoveryServer:
     """
@@ -22,10 +22,10 @@ class ThreadedDiscoveryServer:
             listens for client connections
         """
         self.sock.listen(5)
-        print("[i] Listening for clients...")
+        misc.print_log ("[i] Listening for clients...")
         while True:
             peer_conn, peer_addr = self.sock.accept()
-            print("[+] Peer Connected: {}".format(peer_addr))
+            misc.print_log ("[+] Peer Connected: {}".format(peer_addr))
             #client.settimeout(60)
             new_peer_thread = PeerThread(self.discovery, peer_conn, peer_addr)
             #new_peer_thread.daemon = True
@@ -35,4 +35,4 @@ class ThreadedDiscoveryServer:
         """ stop discovery server execution """
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
-        print("[-] Stopped Tracker Server.")
+        misc.print_log ("[-] Stopped Tracker Server.")

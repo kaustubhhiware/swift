@@ -6,3 +6,6 @@ shared/
 download/
 *.pyc
 client_shared/
+client_tmp/
+server_tmp/
+server_shared/
