@@ -1,54 +1,60 @@
-"""
-Module to handle connections with servers
-"""
 import ast
 import socket
 from peerclient.peerserverthread import PeerServerThread
+from utils import constants
+from utils import misc
 
 def eval_code(code):
     parsed = ast.parse(code, mode='eval')
     fixed = ast.fix_missing_locations(parsed)
     compiled = compile(fixed, '<string>', 'eval')
     return eval(compiled)
+
+
 class ThreadedPeerClient:
-    """ It handles connections with servers"""
+    """
+        handles connections with servers
+    """
     def __init__(self, url):
         self.url = url
         self.peer_servers_set = None
 
-    def fetch_peers_list(self, tracker_server_address, client_tracker_bind_port):
-        """ Fetches list of peer servers"""
-        # connect to tracker
+    def fetch_peers_list(self, discovery_server_address):
+        """
+            Fetches list of peer servers
+        """
+        # connect to discovery
         connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        connection.bind(('', client_tracker_bind_port))
-        connection.connect(tracker_server_address)
-        print("[+] Connected with Tracker.")
-        # ask the tracker for peers list
+        connection.bind(('', constants.CLIENT_SERVER_PORT))
+        connection.connect(discovery_server_address)
+        misc.print_log ("[+] Connected with Discovery server.")
+
         connection.send("sendpeerslist".encode())
-        print("[+] Sent sendpeerslist request.")
+        misc.print_log ("[+] Sent sendpeerslist request.")
         # receive peers list as a set of address tuples
         msg = connection.recv(1024)
         msg = msg.decode()
-        print(msg)
-        print(eval_code(msg))
+        misc.print_log (msg)
+        misc.print_log (eval_code(msg))
         if msg == "None":
             self.peer_servers_set = set()
         else:
             self.peer_servers_set = eval_code(msg)
-        print("[+] Received Peers List: {}".format(self.peer_servers_set))
-        # close the connection to tracker
+        misc.print_log ("[+] Received Peers List: {}".format(self.peer_servers_set))
+        # close the connection to discovery
         connection.shutdown(socket.SHUT_RDWR)
         connection.close()
-        print("[-] Disconnected with Tracker.")
+        misc.print_log ("[-] Disconnected with Discovery server.")
 
     def num_peer_servers(self):
-        """returns number of peer servers"""
         return len(self.peer_servers_set)
 
-    def connect_with_peer_servers(self, range_list, temp_dir, client_server_bind_port, attempt_num):
-        """create connection with peer servers"""
-        print("Trying to connect to peer servers...")
+    def connect_with_peer_servers(self, range_list, attempt_num, filename):
+        """
+            create connection with peer servers
+        """
+        misc.print_log ("[i] Trying to connect to peer servers...")
         part_num = 0
         for peer_server_addr in self.peer_servers_set:
             download_range = range_list[part_num]
@@ -57,9 +63,8 @@ class ThreadedPeerClient:
                 peer_server_addr,
                 download_range,
                 part_num,
-                temp_dir,
-                client_server_bind_port,
-                attempt_num
+                attempt_num, 
+                filename
             )
             part_num += 1
             #new_server_thread.daemon = True

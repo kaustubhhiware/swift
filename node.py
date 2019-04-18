@@ -5,97 +5,77 @@ import threading
 
 from peerclient.threadedpeerclient import ThreadedPeerClient
 from peerserver.threadedpeerserver import ThreadedPeerServer
+from utils import misc
+from utils import request
 from utils import constants
-from utils.calculation import Calculation
-from utils.filehandler import FileHandler
-from utils.misc import print_log, print_prompt
+from utils import calculation
 from utils.multithreadeddownloader import MultithreadedDownloader
-from utils.request import Request
 
 
 def serve():
     server = None
-    filehandle = None
 
+    # creating local copies so that could be passed as args if need be
     temp_dir = constants.SERVER_TEMP_DIR
-    tracker_host = constants.TRACKER_HOST
-    tracker_port = constants.TRACKER_PORT
-    tracker_server_address = (tracker_host, tracker_port)
+    discovery_host = constants.DISCOVERY_HOST
+    discovery_port = constants.DISCOVERY_PORT
+    discovery_server_address = (discovery_host, discovery_port)
     peer_server_host = ''
     peer_server_port = constants.PEER_SERVER_PORT
     peer_server_address = (peer_server_host, peer_server_port)
 
-    # port used by peer-server to communicate with tracker-server
-    bind_port = constants.PEER_SERVER_PORT
-
-    filehandle = FileHandler()
-    filehandle.create_dir(temp_dir)
+    misc.create_dir(temp_dir)
     try:
-
         server = ThreadedPeerServer(peer_server_address)
-        # register the server with tracker
-        server.register_with_tracker(tracker_server_address, bind_port)
+        server.register_with_discovery(discovery_server_address)
 
-        proxy = constants.PROXY
         threads = constants.THREADS
         # listen for download requests from client
-        server.listen(temp_dir, threads, proxy)
+        server.listen(threads)
 
     except Exception as e:
-        print("Oops! Error: {}.".format(e)) 
+        misc.print_log ("[!] Error in server : {}.".format(e)) 
 
     finally:
-
-        # stop peer server
         if server: 
             server.stop_server()
-            # unregister the server with tracker
-            server.unregister_with_tracker(tracker_server_address, bind_port)
+            server.unregister_with_discovery(discovery_server_address)
 
-        # delete the temporary directory
-        filehandle.delete_dir(temp_dir)
-
-        # exit
+        misc.delete_dir(temp_dir)
         sys.exit(0)
+
 
 def request_download(url, firsttime=True, targetLocation=None, missing_range=None, attempt_num=0):
     try:
-        tracker_host = constants.TRACKER_HOST
-        tracker_port = constants.TRACKER_PORT
-        tracker_server_address = (tracker_host, tracker_port)
+        discovery_host = constants.DISCOVERY_HOST
+        discovery_port = constants.DISCOVERY_PORT
+        discovery_server_address = (discovery_host, discovery_port)
 
         temp_dir = constants.CLIENT_TEMP_DIR
         download_dir = constants.CLIENT_DOWNLOAD_DIR
-        proxy = constants.PROXY
         threads = constants.THREADS
 
         try:
-            filehandle = FileHandler()
-            # make sure that the temp_dir and download_dir exist
-            filehandle.create_dir(os.path.abspath(temp_dir))
-            filehandle.create_dir(os.path.abspath(download_dir))
+            misc.create_dir(os.path.abspath(temp_dir))
+            misc.create_dir(os.path.abspath(download_dir))
         except Exception as e:
-            print("Oops! Error: {}.".format(e))
+            misc.print_log ("[!] Error in creating dirs : {}.".format(e))
 
         client = ThreadedPeerClient(url)
-        # port used by peer-client to communicate with tracker
-        client_tracker_bind_port = constants.CLIENT_SERVER_PORT
-
-        # fetch the list of active servers
-        client.fetch_peers_list(tracker_server_address, client_tracker_bind_port)
+        client.fetch_peers_list(discovery_server_address)
 
         # make request to url to get information about file
-        req = Request()
-        response = req.make_request(url, proxy=proxy)
-        req.close_connection(response) 
+        response = request.make_request(url)
+        request.close_connection(response) 
+        
+        # get the filesize
         if firsttime:
-
-            # get the filesize
             filesize = int(response.headers['Content-Length'])
         else:
             filesize = missing_range[1] - missing_range[0] + 1
 
         filename = os.path.basename(url.replace("%20", "_"))
+
         if not firsttime and targetLocation is not None:
             filepath = targetLocation
         else:
@@ -105,37 +85,38 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
             start, end = 0, filesize-1
         else:
             start, end = missing_range
+
         # if range-download is not supported, use simple download
         if response.headers['Accept-Ranges'] != 'bytes':
-            print ("URL doesn't support range download! Using default download...")
-            MultithreadedDownloader().download(url, start, end, filepath, 
-                                            temp_dir, response, threads, proxy)
+            misc.print_log ("[i] Range download not supported! Using default download")
+            MultithreadedDownloader().download(url, start, end, filepath, response, threads)
+        
         # if servers doesn't exist, use simple download
         elif client.num_peer_servers() == 0:
-            print ("No peer servers! Using default download...")
-            MultithreadedDownloader().download(url, start, end, filepath, 
-                                            temp_dir, response, threads, proxy)
+            misc.print_log ("[i] No peers! Using default download")
+            MultithreadedDownloader().download(url, start, end, filepath, response, threads)
+        
+        # if filesize too small to be distributed, manage alone
         elif filesize <= constants.CHUNK_SIZE:
-            print ("File size small enough to be downloaded individually...")
-            MultithreadedDownloader().download(url, start, end, filepath, 
-                                            temp_dir, response, threads, proxy)            
+            misc.print_log ("[i] File size small enough to be downloaded individually")
+            MultithreadedDownloader().download(url, start, end, filepath, response, threads)           
         else:
-            print ("Peer Servers found! Distributing download...")
-            print ("peer-client filesize: {}".format(filesize))
+            misc.print_log ("[+] Peer Servers found! Distributing download...")
+            misc.print_log ("[+] peer-client filesize: {}".format(filesize))
 
             # get the download ranges to be assigned to each
             parts = client.num_peer_servers()
             if firsttime:
-                range_list = Calculation().get_download_ranges_list(0, filesize-1, parts)
+                range_list = calculation.get_download_ranges_list(0, filesize-1, parts)
             else:
-                range_list = Calculation().get_download_ranges_list(missing_range[0], missing_range[1], parts)
+                range_list = calculation.get_download_ranges_list(missing_range[0], missing_range[1], parts)
 
-            print('Jobs')
+            misc.print_log ('[d] Assigned download ranges as jobs :')
             for each in zip(range_list, list(client.peer_servers_set)):
                 print(each)
             # connect with each server and send them the download details
             client_server_bind_port = constants.CLIENT_SERVER_PORT
-            client.connect_with_peer_servers(range_list, temp_dir, client_server_bind_port, attempt_num)
+            client.connect_with_peer_servers(range_list, temp_dir, client_server_bind_port, attempt_num, filename)
 
             # wait for download to complete at each server
             # except main_thread, calling join() for each thread
@@ -147,21 +128,21 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
                     continue
                 t.join()
             
-            print('All threads done')
+            misc.print_log ('[d] All download threads done')
             # Check which parts have not been downloaded yet, and download them with specific file name
             for part_num in range(parts):
-                tempfilepath = temp_dir + 'part' + str(attempt_num) + '_' + str(part_num)
+                tempfilepath = temp_dir + filename + '_part' + str(attempt_num) + '_' + str(part_num)
                 assigned_range = range_list[part_num]
                 actual_file_size = os.stat(tempfilepath).st_size - 1
                 expected_file_size = assigned_range[1] - assigned_range[0]
 
                 if os.path.exists(tempfilepath) and expected_file_size == actual_file_size:
-                    print('Part num', str(part_num), 'exists of ', parts)
+                    misc.print_log ('[d] Part num' + str(part_num) + 'exists of ' +  str(parts))
                     continue
-                if os.path.exists(tempfilepath):
-                    filehandle.delete_file(tempfilepath)
-                print('Got ', str(actual_file_size), ' expected ',expected_file_size)
-                print ('[+] Node # {} crashed. Reassigning its downloads'.format(str(part_num)))
+                misc.delete_file(tempfilepath)
+                misc.print_log ( '[d][!] Got ' + str(actual_file_size) + ' expected '+ str(expected_file_size) )
+                misc.print_log ( '[d][i] Node # {} crashed. Reassigning its downloads'.format(str(part_num)) )
+                # recursively call this function, with updated range and attempt number
                 request_download(url, firsttime = False,
                                 targetLocation = tempfilepath, 
                                 missing_range = range_list[part_num], 
@@ -171,32 +152,32 @@ def request_download(url, firsttime=True, targetLocation=None, missing_range=Non
             # after receiving all parts, merge them
             with open(filepath,'wb') as wfd:
                 for f in range(parts):
-                    tempfilepath = temp_dir + "part" + str(attempt_num) + '_' + str(f)
-                    print('Reassembling ', tempfilepath)
+                    tempfilepath = temp_dir + filename + "_part" + str(attempt_num) + '_' + str(f)
+                    misc.print_log ('[d] Reassembling ' + tempfilepath)
                     with open(tempfilepath, "rb") as fd:
                         shutil.copyfileobj(fd, wfd)     
                     # delete copied segment
-                    filehandle.delete_file(tempfilepath)
-            print('Done with the download of ',filepath)
+                    misc.delete_file(tempfilepath)
+            misc.print_log ('[d] Done with the download of ' + filepath)
 
     except ConnectionError:
-        print ("Connection Error! Falling back to download at client...")
+        misc.print_log ("[!] Connection Error! Falling back to download at client...")
     except Exception as e:
-        print("Download request error: {}.".format(e))
+        misc.print_log ("[!] Download request error: {}.".format(e))
         # delete the file if error occured
-        filehandle.delete_file(filepath)
+        misc.delete_file(filepath)
     finally:
         # delete temporary directory
-        # filehandle.delete_dir(temp_dir)
+        # misc.delete_dir(temp_dir)
         # exit
-        print('attempt_num', attempt_num, 'complete')
+        misc.print_log ('[d] attempt_num ' + str(attempt_num) + ' complete')
         # if attempt_num == 0:
         #     print('k bye')
         #     sys.exit(0)
         return
 
 if __name__ == "__main__":
-    print_prompt()
+    misc.print_welcome_prompt()
     try:
         newpid = os.fork()
         if newpid != 0:
@@ -212,4 +193,4 @@ if __name__ == "__main__":
                 else:
                     pass
     except Exception as e:
-        print_log("Error: %s " % e)
+        misc.print_log ("[!] Error: %s " % e)

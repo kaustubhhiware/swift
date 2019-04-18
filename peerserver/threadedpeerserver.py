@@ -1,13 +1,13 @@
-"""
-Handles connection with clients
-"""
 import socket
 from utils import constants
+from utils import misc
 from peerserver.peerclientthread import PeerClientThread
 
 
 class ThreadedPeerServer:
-    """ Multithreaded peer-server that assigns single thread to each peer-client connection """
+    """
+        Multithreaded peer-server that assigns single thread to each peer-client connection
+    """
     def __init__(self, server_address):
         self.server_address = server_address
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,32 +17,33 @@ class ThreadedPeerServer:
         # self.hbeat_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         # self.hbeat_sock.bind((self.server_address[0], constants.HEARTBEAT_PORT))
 
-    def register_with_tracker(self, tracker_server_address, bind_port):
-        """ connect to tracker and register ip """
-        print("Tracker address: ", tracker_server_address)
+    def register_with_discovery(self, discovery_server_address):
+        """
+            connect to discovery and register ip
+        """
+        misc.print_log ("[i] Discovery server address: " + str(discovery_server_address) )
         connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        connection.bind(('', bind_port))
-        connection.connect(tracker_server_address)
-        print("[+] Connected with Tracker.")
+        connection.bind(('', constants.PEER_SERVER_PORT))
+        connection.connect(discovery_server_address)
+        misc.print_log ("[+] Connected with Discovery server.")
+        
         # register the peer-server
         connection.send("addme".encode())
-        print("[+] Sent addme request.")
-        # close the connection to tracker
+        misc.print_log ("[+] Sent addme request.")
+        # close the connection to discovery
         connection.shutdown(socket.SHUT_RDWR)
         connection.close()
-        print("[-] Disconnected with Tracker.")
+        misc.print_log ("[-] Disconnected with Discovery server.")
 
-    def listen(self, temp_dir, threads, proxy):
-        """ Listen for client connections """
-        print("Server Proxy: ", proxy)
+    def listen(self, threads):
         self.sock.listen(5)
         # self.hbeat_sock.listen(5)
-        print("[+] Listening for clients...")
+        misc.print_log ("[i] Listening for clients...")
         while True:
             client_conn, client_addr = self.sock.accept()
             # hbeat_client_conn, hbeat_client_addr = self.hbeat_sock.accept()
-            print("[+] Client Connected: {}".format(client_addr))
+            misc.print_log ("[+] Client Connected: {}".format(client_addr))
             # client.settimeout(60)
             # assigning a thread to each client connected
             new_client_thread = PeerClientThread(
@@ -50,30 +51,27 @@ class ThreadedPeerServer:
                 client_addr,
                 # hbeat_client_conn,
                 # hbeat_client_addr,
-                temp_dir,
-                threads,
-                proxy
+                threads
             )
             #new_client_thread.daemon = True
             new_client_thread.start()
 
-    def unregister_with_tracker(self, tracker_server_address, bind_port):
-        """ connect to tracker and remove ip """
+    def unregister_with_discovery(self, discovery_server_address):
         connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        connection.bind(('', bind_port))
-        connection.connect(tracker_server_address)
-        print("[+] Connected with Tracker.")
+        connection.bind(('', constants.PEER_SERVER_PORT))
+        connection.connect(discovery_server_address)
+        misc.print_log("[i] Connected with Discovery server.")
+        
         # unregister the peer-server
         connection.send("removeme".encode())
-        print("[+] Sent removeme request.")
-        # close the connection to tracker
+        misc.print_log ("[-] Sent removeme request.")
+        # close the connection to discovery
         connection.shutdown(socket.SHUT_RDWR)
         connection.close()
-        print("[-] Disconnected with Tracker.")
+        misc.print_log ("[-] Disconnected with Discovery server.")
 
     def stop_server(self):
-        """ stop server execution """
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
-        print("[-] Stopped Peer Server.")
+        misc.print_log ("[-] Stopped Peer Server.")

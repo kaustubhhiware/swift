@@ -8,23 +8,21 @@ import json
 import os
 import time
 from utils import constants
-from utils.request import Request
+from utils import request
+from utils import calculation
+from utils import misc
 from utils.multithreadeddownloader import MultithreadedDownloader
-from utils.calculation import Calculation
-from utils.filehandler import FileHandler
 
 
 class PeerClientThread(threading.Thread):
     """ class for a thread which handles a peer-client connection"""
-    def __init__(self, client_conn, client_addr, temp_dir, threads, proxy):
+    def __init__(self, client_conn, client_addr, threads):
         threading.Thread.__init__(self)
         self.client_conn = client_conn
         # self.hbeat_client_conn = hbeat_client_conn
         self.client_addr = client_addr
         # self.hbeat_client_addr = hbeat_client_addr
-        self.temp_dir = temp_dir
         self.threads = threads
-        self.proxy = proxy
 
     def run(self):
         pid = os.fork()
@@ -44,21 +42,21 @@ class PeerClientThread(threading.Thread):
             msg = self.client_conn.recv(size)
             if msg:
                 msg = msg.decode()
-                print("[+] Received Message: {}".format(msg))
+                misc.print_log ("[+] Received Message: {}".format(msg))
                 msg = json.loads(msg)
 
                 # generate a random name for file
-                filename = Calculation().generate_random_string(12)
-                filepath = self.temp_dir + filename
+                filename = calculation.generate_random_string(12)
+                filepath = constants.SERVER_TEMP_DIR + filename
 
                 # use request to download
                 url = msg['url']
                 range_left = msg['range-left']
                 range_right = msg['range-right']
-                response = Request().make_request(url, self.proxy)
+                response = request.make_request(url)
 
                 # use Multiprocess to download using multithreading
-                print("starting new process to download {}".format(filename))
+                misc.print_log ("[i] Starting new process to download {}".format(filename))
                 process = multiprocessing.Process(
                     target=MultithreadedDownloader().download,
                     args=(
@@ -66,40 +64,34 @@ class PeerClientThread(threading.Thread):
                         range_left,
                         range_right,
                         filepath,
-                        self.temp_dir,
                         response,
                         self.threads,
-                        self.proxy,
                     )
                 )
                 process.start()
                 process.join()
-                print('Out of process for file {}'.format(filename))
+                misc.print_log ('[i] Out of process for file {}'.format(filename))
 
-                # send the downloaded file part to peer-client
                 self.send_file_part(filepath)
-
-                # let peer-client know that file sending is done
                 self.client_conn.shutdown(socket.SHUT_RDWR)
-
-                # close connection with peer-client
                 self.client_conn.close()
-                print("[-] Client Disconnected: {}".format(self.client_addr))
+                misc.print_log ("[-] Client Disconnected: {}".format(self.client_addr))
 
-                # delete temp file
-                FileHandler().delete_file(filepath)
-                print("[-] Temp File Deleted.")
+                misc.delete_file(filepath)
+                misc.print_log ("[-] Temp File Deleted.")
 
     def send_file_part(self, filepath):
-        """ function for sending file at 'filepath' through socket to client """
+        """
+            function for sending file at 'filepath' through socket to client
+        """
         file = open(filepath, 'rb')
         chunk = file.read(1024)
-        print('Sending...')
+        misc.print_log ('[i] Sending...')
         try:
             while chunk:
                 self.client_conn.send(chunk)
                 chunk = file.read(1024)
             file.close()
-            print("Done Sending File!")
+            misc.print_log ("[i] Done Sending File!")
         except IOError as e:
-            print("Client disconnected, Got IOError: {}. Stopping download".format(e))
+            misc.print_log ("[!] Client disconnected, Got IOError: {}. Stopping download".format(e))
