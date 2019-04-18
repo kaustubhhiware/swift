@@ -34,33 +34,24 @@ class PeerServerThread(threading.Thread):
         """ Runs thread """
         pid = os.fork()
         is_downloaded = False
+        # connect to peer-server
+        print("[+] Trying to connect to {}".format(self.peer_server_addr))
+        self.sock.connect(self.peer_server_addr)
+        print("[+] Connected with Server at {}".format(self.peer_server_addr))
         if pid == 0: # Heartbeat thread
-            pass
-            # try:
-            #     print("[+] Trying to connect to {}".format(self.peer_server_addr))
-            #     self.hbeat_sock.connect(self.peer_server_addr)
-            #     print("[+] Connected with Server at {}".format(self.peer_server_addr))
-            #     num_failures = 0
-            #     # Can tolerate upto 2 consecutive heartbeat failures
-            #     while num_failures < 2 and not is_downloaded:
-            #         time.sleep(5)
-            #         print("[+] Requesting heartbeat from {}".format(self.peer_server_addr))
-            #         if not self.heartbeat():
-            #             print("[-] Heartbeat {}".format(self.peer_server_addr))
-            #             num_failures += 1
-            #         else:
-            #             num_failures = 0
-            #     else:
-            #         # In case of failure, exit thread
-            #         self.close_connection()
-            # except Exception as e:
-            #     print("Heartbeat thread exception: {}".format(e))
+            try:
+                while not is_downloaded:
+                    time.sleep(5)
+                    print("[+] Requesting heartbeat from {}".format(self.peer_server_addr))
+                    if not self.heartbeat():
+                        print("[-] Heartbeat {}".format(self.peer_server_addr))
+                else:
+                    # In case of failure, exit thread
+                    self.close_connection()
+            except Exception as e:
+                print("Heartbeat thread exception: {}".format(e))
         else: # Download thread
             try:
-                # connect to peer-server
-                print("[+] Trying to connect to {}".format(self.peer_server_addr))
-                self.sock.connect(self.peer_server_addr)
-                print("[+] Connected with Server at {}".format(self.peer_server_addr))
                 # send {"url":"", "range-left":"", "range-right":""} to peer-server
                 download_info = {
                     "url": self.url,
@@ -89,17 +80,21 @@ class PeerServerThread(threading.Thread):
         file.close()
         print("Done Receiving!")
 
-    # def heartbeat(self):
-    #     # hbeat_request = "hbeat"
-    #     # print("Requesting server status from %s" % (self.peer_server_addr))
-    #     # self.hbeat_sock.send(hbeat_request)
-    #     size = 1024
-    #     try:
-    #         reply = self.hbeat_sock.recv(size)
-    #         if reply == "ack":
-    #             return True
-    #     except Exception:
-    #         return False
+    def heartbeat(self):
+        # TODO: send msg_peek to check for alive connection
+        print("Requesting server status from %s" % (self.peer_server_addr))
+        size = 1024
+        try:
+            reply = self.sock.recv(size, socket.MSG_PEEK)
+            if reply > 0:
+                print("Received heartbeat from %s" % (self.peer_server_addr))
+                return True
+            else:
+                print("Connection Error: could not get heartbeat from %s" % (self.peer_server_addr))
+                return False
+        except Exception:
+            print("Connection Error: could not get heartbeat from %s" % (self.peer_server_addr))
+            return False
 
     def close_connection(self):
         """ Closes connection """
