@@ -1,4 +1,4 @@
- ~/A/D/T/swift   *  python3 node.py                              1.6m  Thu 18 Apr 2019 01:46:13 AM IST
+ ~/A/D/T/swift   +  python node.py                                 5s  Fri 19 Apr 2019 12:26:20 PM IST
 
 Welcome to
    _____         _ ______ 
@@ -9,139 +9,168 @@ Welcome to
 
 Type "help" for more information 
 
-Tracker address:  ('10.14.84.26', 5000)
->[+] Connected with Tracker.
-[+] Sent addme request.
-[-] Disconnected with Tracker.
-Server Proxy:  http://172.16.2.30:8080/
-[+] Listening for clients...
-request http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Armenia.pdf
-Error: [Errno 17] File exists: '/home/kaustubh/Acads/DS/Term project/swift/client_tmp'
-Error: [Errno 17] File exists: '/home/kaustubh/Acads/DS/Term project/swift/client_shared'
-[+] Connected with Tracker.
-[+] Sent sendpeerslist request.
-{('10.145.187.157', 6000), ('10.5.18.109', 6000), ('10.109.57.164', 6000)}
-{('10.109.57.164', 6000), ('10.145.187.157', 6000), ('10.5.18.109', 6000)}
-[+] Received Peers List: {('10.109.57.164', 6000), ('10.145.187.157', 6000), ('10.5.18.109', 6000)}
-[-] Disconnected with Tracker.
-Set Proxy:  http://172.16.2.30:8080/
-Peer Servers found! Distributing download...
-peer-client filesize: 7520635
-Jobs
-((0, 2506878), ('10.109.57.164', 6000))
-((2506879, 5013756), ('10.145.187.157', 6000))
-((5013757, 7520634), ('10.5.18.109', 6000))
-Trying to connect to peer servers...
-[+] Trying to connect to ('10.109.57.164', 6000)
-[+] Client Connected: ('10.109.57.52', 8000)
-[+] Connected with Server at ('10.109.57.164', 6000)
-[+] Trying to connect to ('10.145.187.157', 6000)
-Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Armenia.pdf", "range-left": 0, "range-right": 2506878}'
-Receiving File part...
-[+] Received Message: {"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Armenia.pdf", "range-left": 0, "range-right": 2506878}
-Set Proxy:  http://172.16.2.30:8080/
-[+] Trying to connect to ('10.5.18.109', 6000)
-[+] Connected with Server at ('10.5.18.109', 6000)
-Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Armenia.pdf", "range-left": 5013757, "range-right": 7520634}'
-Receiving File part...
-[+] Connected with Server at ('10.145.187.157', 6000)
-Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Armenia.pdf", "range-left": 2506879, "range-right": 5013756}'
-Receiving File part...
-starting new process to download 6pJ4nH2lFZjD
-Set Proxy:  http://172.16.2.30:8080/
-Set Proxy:  http://172.16.2.30:8080/
-Set Proxy:  http://172.16.2.30:8080/
-Set Proxy:  http://172.16.2.30:8080/
-Done Receiving!
-[-] Peer-Server Disconnected: ('10.5.18.109', 6000)
-0.60 MB
-Download Finished.
-0.60 MB
-Download Finished.
-0.60 MB
-Download Finished.
-0.60 MB
-Download Finished.
-Out of process for file 6pJ4nH2lFZjD
-Sending...
-Done Sending File!
-[-] Client Disconnected: ('10.109.57.52', 8000)
-[-] Temp File Deleted.
-Done Receiving!
-[-] Peer-Server Disconnected: ('10.109.57.164', 6000)
-Done Receiving!
-[-] Peer-Server Disconnected: ('10.145.187.157', 6000)
-All threads done
-Part num 0 exists of  3
-Part num 1 exists of  3
-Got  -1  expected  2506877
-[+] Node # 2 crashed. Reassigning its downloads
-Error: [Errno 17] File exists: '/home/kaustubh/Acads/DS/Term project/swift/client_tmp'
-Error: [Errno 17] File exists: '/home/kaustubh/Acads/DS/Term project/swift/client_shared'
-[+] Connected with Tracker.
-[+] Sent sendpeerslist request.
-{('10.145.187.157', 6000), ('10.109.57.164', 6000)}
-{('10.109.57.164', 6000), ('10.145.187.157', 6000)}
-[+] Received Peers List: {('10.109.57.164', 6000), ('10.145.187.157', 6000)}
-[-] Disconnected with Tracker.
-Set Proxy:  http://172.16.2.30:8080/
-Peer Servers found! Distributing download...
-peer-client filesize: 2506878
-Jobs
-((5013757, 6267195), ('10.109.57.164', 6000))
-((6267196, 7520634), ('10.145.187.157', 6000))
-Trying to connect to peer servers...
-[+] Trying to connect to ('10.109.57.164', 6000)
-[+] Client Connected: ('10.109.57.52', 8000)
-[+] Connected with Server at ('10.109.57.164', 6000)
-[+] Trying to connect to ('10.145.187.157', 6000)
-[+] Received Message: {"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Armenia.pdf", "range-left": 5013757, "range-right": 6267195}
-Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Armenia.pdf", "range-left": 5013757, "range-right": 6267195}'
-Receiving File part...
-Set Proxy:  http://172.16.2.30:8080/
-[+] Connected with Server at ('10.145.187.157', 6000)
-Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Armenia.pdf", "range-left": 6267196, "range-right": 7520634}'
-Receiving File part...
-starting new process to download sM7qK5oI3mG1
-Set Proxy:  http://172.16.2.30:8080/
-Set Proxy:  http://172.16.2.30:8080/
-Set Proxy:  http://172.16.2.30:8080/
-Set Proxy:  http://172.16.2.30:8080/
-0.30 MB
-Download Finished.
-0.30 MB
-Download Finished.
-0.30 MB
-Download Finished.
-0.30 MB
-Download Finished.
-Out of process for file sM7qK5oI3mG1
-Sending...
-Done Sending File!
-[-] Client Disconnected: ('10.109.57.52', 8000)
-[-] Temp File Deleted.
-Done Receiving!
-[-] Peer-Server Disconnected: ('10.109.57.164', 6000)
-Done Receiving!
-[-] Peer-Server Disconnected: ('10.145.187.157', 6000)
-All threads done
-Part num 0 exists of  2
-Part num 1 exists of  2
-Reassembling  ./client_tmp/part1_0
-Reassembling  ./client_tmp/part1_1
-Done with the download of  ./client_tmp/part0_2
-attempt_num 1 complete
-Reassembling  ./client_tmp/part0_0
-Reassembling  ./client_tmp/part0_1
-Reassembling  ./client_tmp/part0_2
-Done with the download of  ./client_shared/Armenia.pdf
-attempt_num 0 complete
->help
-Available commands are: 
- help, request <file_url>
->[18 Apr 2019 - 01:46:57] Error:  
-^C[-] Stopped Peer Server.
-[+] Connected with Tracker.
-[+] Sent removeme request.
-[-] Disconnected with Tracker.
- ~/A/D/T/swift   *  gst     
+>[2019-04-19 - 12:50:50.441][i] Discovery server address: ('10.14.84.26', 5000)
+[2019-04-19 - 12:50:50.442][+] Connected with Discovery server.
+[2019-04-19 - 12:50:50.442][+] Sent addme request.
+[2019-04-19 - 12:50:50.442][-] Disconnected with Discovery server.
+[2019-04-19 - 12:50:50.442][i] Listening for clients...
+request http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf
+[2019-04-19 - 12:51:34.203][+] Connected with Discovery server.
+[2019-04-19 - 12:51:34.203][+] Sent sendpeerslist request.
+[2019-04-19 - 12:51:34.203]{('10.5.16.222', 6000), ('10.5.16.254', 6000), ('10.5.18.109', 6000)}
+[2019-04-19 - 12:51:34.305]{('10.5.16.254', 6000), ('10.5.18.109', 6000), ('10.5.16.222', 6000)}
+[2019-04-19 - 12:51:34.306][+] Received Peers List: {('10.5.16.254', 6000), ('10.5.18.109', 6000), ('10.5.16.222', 6000)}
+[2019-04-19 - 12:51:34.306][-] Disconnected with Discovery server.
+[2019-04-19 - 12:51:35.955][+] Peer Servers found! Distributing download...
+[2019-04-19 - 12:51:35.955][+] peer-client filesize: 78279503
+[2019-04-19 - 12:51:35.955][d] Assigned download ranges as jobs :
+((0, 26093167), ('10.5.16.254', 6000))
+((26093168, 52186335), ('10.5.18.109', 6000))
+((52186336, 78279502), ('10.5.16.222', 6000))
+[2019-04-19 - 12:51:35.955][i] Trying to connect to peer servers...
+[2019-04-19 - 12:51:35.956][+] Trying to connect to ('10.5.16.254', 6000)
+[2019-04-19 - 12:51:35.956][+] Connected with Server at ('10.5.16.254', 6000)
+[2019-04-19 - 12:51:35.957][+] Trying to connect to ('10.5.18.109', 6000)
+[2019-04-19 - 12:51:35.957][i] Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 0, "range-right": 26093167}'
+[2019-04-19 - 12:51:35.958][i] Receiving File part...
+[2019-04-19 - 12:51:35.958][+] Connected with Server at ('10.5.18.109', 6000)
+[2019-04-19 - 12:51:35.958][+] Trying to connect to ('10.5.16.222', 6000)
+[2019-04-19 - 12:51:35.958][i] Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 26093168, "range-right": 52186335}'
+[2019-04-19 - 12:51:35.958][i] Receiving File part...
+[2019-04-19 - 12:51:35.959][+] Client Connected: ('10.5.16.222', 8000)
+[2019-04-19 - 12:51:35.959][+] Connected with Server at ('10.5.16.222', 6000)
+[2019-04-19 - 12:51:35.960][i] Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 52186336, "range-right": 78279502}'
+[2019-04-19 - 12:51:35.960][i] Receiving File part...
+[2019-04-19 - 12:51:35.960][+] Received Message: {"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 52186336, "range-right": 78279502}
+[2019-04-19 - 12:51:37.244][i] Starting new process to download u06CIOUagmsy
+[i] 8.30 MB[2019-04-19 - 12:51:48.047]
+[i] Download Finished.
+[i] 8.30 MB[2019-04-19 - 12:51:48.102]
+[i] Download Finished.
+[i] 4.75 MB[2019-04-19 - 12:51:50.047][i] Done Receiving!
+[2019-04-19 - 12:51:50.048][-] Peer-Server Disconnected: ('10.5.18.109', 6000)
+[i] 8.25 MB[2019-04-19 - 12:51:55.955][i] Done Receiving!
+[2019-04-19 - 12:51:55.955][-] Peer-Server Disconnected: ('10.5.16.254', 6000)
+[i] 8.30 MB[2019-04-19 - 12:51:57.698]
+[i] Download Finished.
+[2019-04-19 - 12:51:57.842][i] Out of process for file u06CIOUagmsy
+[2019-04-19 - 12:51:57.842][i] Sending...
+[2019-04-19 - 12:51:57.905][i] Done Sending File!
+[2019-04-19 - 12:51:57.905][-] Client Disconnected: ('10.5.16.222', 8000)
+[2019-04-19 - 12:51:57.912][-] Temp File Deleted.
+[2019-04-19 - 12:51:57.922][i] Done Receiving!
+[2019-04-19 - 12:51:57.922][-] Peer-Server Disconnected: ('10.5.16.222', 6000)
+[2019-04-19 - 12:51:57.922][d] All download threads done
+[2019-04-19 - 12:51:57.922][d] Part num 0 exists of 3
+[2019-04-19 - 12:51:57.922][d] Part num 1 exists of 3
+[2019-04-19 - 12:51:57.922][d] Part num 2 exists of 3
+[2019-04-19 - 12:51:57.944][d] Reassembling ./client_tmp/Principa_Mathematica_Newton.pdf_part0_0
+[2019-04-19 - 12:51:58.038][d] Reassembling ./client_tmp/Principa_Mathematica_Newton.pdf_part0_1
+[2019-04-19 - 12:51:58.113][d] Reassembling ./client_tmp/Principa_Mathematica_Newton.pdf_part0_2
+[2019-04-19 - 12:51:58.963][d] Done with the download of ./client_shared/Principa_Mathematica_Newton.pdf
+[2019-04-19 - 12:51:58.964][d] attempt_num 0 complete
+>request http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf
+[2019-04-19 - 12:56:36.141][+] Connected with Discovery server.
+[2019-04-19 - 12:56:36.141][+] Sent sendpeerslist request.
+[2019-04-19 - 12:56:36.142]{('10.5.16.222', 6000), ('10.5.16.254', 6000), ('10.5.18.109', 6000)}
+[2019-04-19 - 12:56:36.142]{('10.5.16.254', 6000), ('10.5.18.109', 6000), ('10.5.16.222', 6000)}
+[2019-04-19 - 12:56:36.142][+] Received Peers List: {('10.5.16.254', 6000), ('10.5.18.109', 6000), ('10.5.16.222', 6000)}
+[2019-04-19 - 12:56:36.143][-] Disconnected with Discovery server.
+[2019-04-19 - 12:56:37.421][+] Peer Servers found! Distributing download...
+[2019-04-19 - 12:56:37.421][+] peer-client filesize: 78279503
+[2019-04-19 - 12:56:37.421][d] Assigned download ranges as jobs :
+((0, 26093167), ('10.5.16.254', 6000))
+((26093168, 52186335), ('10.5.18.109', 6000))
+((52186336, 78279502), ('10.5.16.222', 6000))
+[2019-04-19 - 12:56:37.421][i] Trying to connect to peer servers...
+[2019-04-19 - 12:56:37.421][+] Trying to connect to ('10.5.16.254', 6000)
+[2019-04-19 - 12:56:37.422][+] Trying to connect to ('10.5.18.109', 6000)
+[2019-04-19 - 12:56:37.422][+] Connected with Server at ('10.5.16.254', 6000)
+[2019-04-19 - 12:56:37.423][+] Trying to connect to ('10.5.16.222', 6000)
+[2019-04-19 - 12:56:37.423][+] Connected with Server at ('10.5.18.109', 6000)
+[2019-04-19 - 12:56:37.423][i] Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 0, "range-right": 26093167}'
+[2019-04-19 - 12:56:37.424][i] Receiving File part...
+[2019-04-19 - 12:56:37.424][+] Client Connected: ('10.5.16.222', 8000)
+[2019-04-19 - 12:56:37.424][i] Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 26093168, "range-right": 52186335}'
+[2019-04-19 - 12:56:37.424][i] Receiving File part...
+[2019-04-19 - 12:56:37.424][+] Connected with Server at ('10.5.16.222', 6000)
+[2019-04-19 - 12:56:37.425][i] Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 52186336, "range-right": 78279502}'
+[2019-04-19 - 12:56:37.425][+] Received Message: {"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 52186336, "range-right": 78279502}
+[2019-04-19 - 12:56:37.425][i] Receiving File part...
+[2019-04-19 - 12:56:38.695][i] Starting new process to download jpv17DJPVbhn
+[i] 5.00 MB[2019-04-19 - 12:56:45.074][i] Done Receiving!
+[2019-04-19 - 12:56:45.074][-] Peer-Server Disconnected: ('10.5.18.109', 6000)
+[i] 8.30 MB[2019-04-19 - 12:56:49.703]
+[i] Download Finished.
+[i] 8.30 MB[2019-04-19 - 12:56:50.211]
+[i] Download Finished.
+[i] 8.30 MB[2019-04-19 - 12:56:50.960]
+[i] Download Finished.
+[2019-04-19 - 12:56:51.068][i] Out of process for file jpv17DJPVbhn
+[2019-04-19 - 12:56:51.069][i] Sending...
+[2019-04-19 - 12:56:51.265][i] Done Sending File!
+[2019-04-19 - 12:56:51.265][-] Client Disconnected: ('10.5.16.222', 8000)
+[2019-04-19 - 12:56:51.274][-] Temp File Deleted.
+[2019-04-19 - 12:56:51.285][i] Done Receiving!
+[2019-04-19 - 12:56:51.286][-] Peer-Server Disconnected: ('10.5.16.222', 6000)
+[2019-04-19 - 12:57:00.979][i] Done Receiving!
+[2019-04-19 - 12:57:00.979][-] Peer-Server Disconnected: ('10.5.16.254', 6000)
+[2019-04-19 - 12:57:00.979][d] All download threads done
+[2019-04-19 - 12:57:00.979][d] Part num 0 exists of 3
+[2019-04-19 - 12:57:00.979][d][!] Got -1 expected 26093167
+[2019-04-19 - 12:57:00.979][d][i] Node # 1 crashed. Reassigning its downloads
+[2019-04-19 - 12:57:00.979][+] Connected with Discovery server.
+[2019-04-19 - 12:57:00.979][+] Sent sendpeerslist request.
+[2019-04-19 - 12:57:00.980]{('10.5.16.222', 6000), ('10.5.16.254', 6000), ('10.5.18.109', 6000)}
+[2019-04-19 - 12:57:00.980]{('10.5.16.254', 6000), ('10.5.18.109', 6000), ('10.5.16.222', 6000)}
+[2019-04-19 - 12:57:00.980][+] Received Peers List: {('10.5.16.254', 6000), ('10.5.18.109', 6000), ('10.5.16.222', 6000)}
+[2019-04-19 - 12:57:00.980][-] Disconnected with Discovery server.
+[2019-04-19 - 12:57:02.256][+] Peer Servers found! Distributing download...
+[2019-04-19 - 12:57:02.257][+] peer-client filesize: 26093168
+[2019-04-19 - 12:57:02.257][d] Assigned download ranges as jobs :
+((26093168, 34790890), ('10.5.16.254', 6000))
+((34790891, 43488613), ('10.5.18.109', 6000))
+((43488614, 52186335), ('10.5.16.222', 6000))
+[2019-04-19 - 12:57:02.257][i] Trying to connect to peer servers...
+[2019-04-19 - 12:57:02.257][+] Trying to connect to ('10.5.16.254', 6000)
+[2019-04-19 - 12:57:02.258][+] Trying to connect to ('10.5.18.109', 6000)
+[2019-04-19 - 12:57:02.258][+] Connected with Server at ('10.5.16.254', 6000)
+[2019-04-19 - 12:57:02.259][+] Trying to connect to ('10.5.16.222', 6000)
+[2019-04-19 - 12:57:02.259][i] Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 26093168, "range-right": 34790890}'
+[2019-04-19 - 12:57:02.259][i] Receiving File part...
+[2019-04-19 - 12:57:02.259][+] Client Connected: ('10.5.16.222', 8000)
+[2019-04-19 - 12:57:02.260][+] Connected with Server at ('10.5.16.222', 6000)
+[2019-04-19 - 12:57:02.260][i] Download info sent: b'{"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 43488614, "range-right": 52186335}'
+[2019-04-19 - 12:57:02.260][i] Receiving File part...
+[2019-04-19 - 12:57:02.263][+] Received Message: {"url": "http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20Newton.pdf", "range-left": 43488614, "range-right": 52186335}
+[2019-04-19 - 12:57:03.280][!] Peer server thread exception: [Errno 111] Connection refused
+[2019-04-19 - 12:57:03.555][i] Starting new process to download SYekqw28EKQW
+[i] 2.77 MB[2019-04-19 - 12:57:08.610]
+[i] Download Finished.
+[i] 2.77 MB[2019-04-19 - 12:57:08.613]
+[i] Download Finished.
+[i] 2.77 MB[2019-04-19 - 12:57:08.940]
+[i] Download Finished.
+[2019-04-19 - 12:57:08.983][i] Out of process for file SYekqw28EKQW
+[2019-04-19 - 12:57:08.983][i] Sending...
+[2019-04-19 - 12:57:09.038][i] Done Sending File!
+[2019-04-19 - 12:57:09.038][-] Client Disconnected: ('10.5.16.222', 8000)
+[2019-04-19 - 12:57:09.043][-] Temp File Deleted.
+[2019-04-19 - 12:57:09.086][i] Done Receiving!
+[2019-04-19 - 12:57:09.086][-] Peer-Server Disconnected: ('10.5.16.222', 6000)
+[2019-04-19 - 12:57:12.091][i] Done Receiving!
+[2019-04-19 - 12:57:12.091][-] Peer-Server Disconnected: ('10.5.16.254', 6000)
+[2019-04-19 - 12:57:12.092][d] All download threads done
+[2019-04-19 - 12:57:12.092][d] Part num 0 exists of 3
+[2019-04-19 - 12:57:12.092][d] attempt_num 1 complete
+[2019-04-19 - 12:57:12.093][d] Part num 2 exists of 3
+[2019-04-19 - 12:57:12.093][d] Reassembling ./client_tmp/Principa_Mathematica_Newton.pdf_part0_0
+[2019-04-19 - 12:57:12.206][d] Reassembling ./client_tmp/Principa_Mathematica_Newton.pdf_part0_1
+[2019-04-19 - 12:57:12.225][d] attempt_num 0 complete
+>^CTraceback (most recent call last):
+  File "node.py", line 188, in <module>
+    raw_input = input(">").strip().split()
+[2019-04-19 - 14:58:16.977][-] Stopped Peer Server.
+[2019-04-19 - 14:58:16.977][i] Connected with Discovery server.
+[2019-04-19 - 14:58:16.977][-] Sent removeme request.
+[2019-04-19 - 14:58:16.978][-] Disconnected with Discovery server.
