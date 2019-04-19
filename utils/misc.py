@@ -33,7 +33,7 @@ def get_seconds(timestr):
 
 def time_diff(time_a, time_b, time_c):
     time_a, time_b, time_c = get_seconds(time_a), get_seconds(time_b), get_seconds(time_c)
-    print(time_b - time_a, '\t', time_c - time_b, '\t', time_c - ta)
+    print(time_b - time_a, '\t', time_c - time_b, '\t', time_c - time_a)
 
 
 def get_file_size_local(file):

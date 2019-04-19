@@ -15,7 +15,7 @@ if __name__ == "__main__":
         server.listen()
     
     except Exception as err:
-        misc.print_log ("[!] Oops! Error in discovery : {}.".format(err))
+        misc.print_log ("[!] Error in discovery : {}.".format(err))
 
     finally:
         main_thread = threading.current_thread()
