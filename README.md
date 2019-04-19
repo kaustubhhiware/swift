@@ -27,7 +27,7 @@ Request: http://intersci.ss.uci.edu/wiki/eBooks/BOOKS/Principa%20Mathematica%20N
 File size: 78.3 MB
 
 Nodes | Download time(s) | Reassembly time (s) | Total time (s)
---- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
+--- | --- | --- | ---
 1 | 32.535 | 0.116 |32.651
 2 | 27.6 | 0.835 | 28.435
 3 | 20.105 | 1.106 | 21.211
@@ -41,7 +41,7 @@ We observe that since each node has lesser size to download, download time reduc
 Same file is requested
 
 Nodes | Download time(s) | Reassembly time (s) | Total time (s)
---- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
+--- | --- | --- | ---
 1 | 54.417 | 1.134 | 55.551
 2 | 30.917 | 0.816 | 31.733
 3 | 23.133 | 0.774 | 23.907
