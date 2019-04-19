@@ -67,5 +67,4 @@ class ThreadedPeerClient:
                 filename
             )
             part_num += 1
-            #new_server_thread.daemon = True
             new_server_thread.start()

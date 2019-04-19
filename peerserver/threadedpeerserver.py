@@ -13,9 +13,6 @@ class ThreadedPeerServer:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind(self.server_address)
-        # self.hbeat_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # self.hbeat_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        # self.hbeat_sock.bind((self.server_address[0], constants.HEARTBEAT_PORT))
 
     def register_with_discovery(self, discovery_server_address):
         """
@@ -38,22 +35,17 @@ class ThreadedPeerServer:
 
     def listen(self, threads):
         self.sock.listen(5)
-        # self.hbeat_sock.listen(5)
         misc.print_log ("[i] Listening for clients...")
         while True:
             client_conn, client_addr = self.sock.accept()
-            # hbeat_client_conn, hbeat_client_addr = self.hbeat_sock.accept()
             misc.print_log ("[+] Client Connected: {}".format(client_addr))
             # client.settimeout(60)
             # assigning a thread to each client connected
             new_client_thread = PeerClientThread(
                 client_conn,
                 client_addr,
-                # hbeat_client_conn,
-                # hbeat_client_addr,
                 threads
             )
-            #new_client_thread.daemon = True
             new_client_thread.start()
 
     def unregister_with_discovery(self, discovery_server_address):
