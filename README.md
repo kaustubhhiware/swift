@@ -97,6 +97,14 @@ Note, run `pipreqs . --force` before pushing.
 * Load balancing - based on bandwidth for each node. Instead of assigning equisized ranges to each server, each server can report its load (either inverse of bandwidth, or CPU load) and ranges are assigned accordingly.
 * Heartbeat, so that if requesting client crashes, other servers can stop downloading that requested file.
 
+## References
+
+* [GRPC](https://grpc.io/docs/quickstart/python.html)
+* [Distributed Downloader and Manager](https://github.com/code-master5/Distributed-Downloader-and-Merger)
+* [P2P system](https://github.com/kushkgp/P2P_System)
+* [Distributed download](https://github.com/tazzaoui/distributed-download)
+* [py-ifps](https://github.com/ipfs/py-ipfs)
+* [Distributed File Storage](https://github.com/kavyasahai/DistributedFileStorage)
 
 ## License
 
